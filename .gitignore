@@ -1,0 +1,6 @@
+build/*
+build_c/*
+build_xcode/*
+tests/outputs/*.jpg
+tests/outputs/*.png
+.vscode/
