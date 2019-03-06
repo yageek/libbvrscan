@@ -28,6 +28,10 @@ int bvr_io_load_image(const char *path_name, bvr_io_image_source_t *dst);
  */
 void bvr_io_image_source_free(bvr_io_image_source_t dst);
 
+/**
+ * @brief An enum representing the output 
+ * writing format of an image
+ */
 typedef enum
 {
     BVRWritingTypePNG,

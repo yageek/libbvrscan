@@ -31,9 +31,43 @@ typedef struct
   uint64_t *content;
 } bvr_mat64_t;
 
+/**
+ * @brief Creates an empty `uint8_t` matrix
+ * 
+ * @param width The width of the matrix (column)
+ * @param height The height of the matrix (rows)
+ * @return bvr_mat8_t* 
+ */
 bvr_mat8_t *bvr_mat8_new(size_t width, size_t height);
+
+/**
+ * @brief Creates an empty `uint8_t` matrix
+ * 
+ * @param width The width of the matrix (column)
+ * @param height The height of the matrix (rows)
+ * @return bvr_mat8_t* 
+ */
+
 bvr_mat32_t *bvr_mat32_new(size_t width, size_t height);
+
+/**
+ * @brief Creates an empty `uint32_t` matrix
+ * 
+ * @param width The width of the matrix (column)
+ * @param height The height of the matrix (rows)
+ * @return bvr_mat8_t* 
+ */
+
 bvr_matf32_t *bvr_matf32_new(size_t width, size_t height);
+
+/**
+ * @brief Creates an empty `uint64_t` matrix
+ * 
+ * @param width The width of the matrix (column)
+ * @param height The height of the matrix (rows)
+ * @return bvr_mat8_t* 
+ */
+
 bvr_mat64_t *bvr_mat64_new(size_t width, size_t height);
 
 #define bvr_mat_free(m) \
