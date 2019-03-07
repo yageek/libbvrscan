@@ -5,9 +5,9 @@
 
 typedef struct
 {
-    bvr_matf32_t *input_layer;
-    bvr_matf32_t *hidden_layer;
-    bvr_matf32_t *output_layer;
+    bvr_matf64_t *input_layer;
+    bvr_matf64_t *hidden_layer;
+    bvr_matf64_t *output_layer;
 
     float (*activation_func)(float);
     float (*activation_func_deriv)(float);
@@ -16,8 +16,8 @@ typedef struct
 
 typedef struct
 {
-    bvr_matf32_t *input_layer;
-    bvr_matf32_t *output_layer;
+    bvr_matf64_t *input_layer;
+    bvr_matf64_t *output_layer;
 
 } bvr_neural_training_set_t;
 

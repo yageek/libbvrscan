@@ -16,18 +16,18 @@ bvr_mat8_t *bvr_filter_create_grayscale(const bvr_io_image_source_t *src);
  * @brief Create an image integer with integer values
  * 
  * @param src The grayscale input image
- * @return bvr_matf32_t* The corresponding image integral matrix.
+ * @return bvr_matf64_t* The corresponding image integral matrix.
  */
-bvr_matf32_t *bvr_filter_create_image_integral(const bvr_mat8_t *src);
+bvr_matf64_t *bvr_filter_create_image_integral(const bvr_mat8_t *src);
 
 /**
  * @brief Create an image integer with floating values
  * 
  * @param src The grayscale input image
- * @return bvr_matf32_t* The corresponding image integral matrix.
+ * @return bvr_matf64_t* The corresponding image integral matrix.
  */
 
-bvr_matf32_t *bvr_filter_create_image_fintegral(const bvr_matf32_t *src);
+bvr_matf64_t *bvr_filter_create_image_fintegral(const bvr_matf64_t *src);
 
 /**
  * @brief Filter the provided grayscale image with the Sauvola algorithm.

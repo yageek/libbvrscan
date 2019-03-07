@@ -27,21 +27,21 @@ bvr_mat64_t *bvr_mat64_new(size_t width, size_t height)
     return mat;
 }
 
-bvr_matf32_t *bvr_matf32_new(size_t width, size_t height)
+bvr_matf64_t *bvr_matf64_new(size_t width, size_t height)
 {
 
-    bvr_matf32_t *mat = (bvr_matf32_t *)malloc(sizeof(bvr_matf32_t));
-    mat->content = (float *)calloc(width * height, sizeof(float));
+    bvr_matf64_t *mat = (bvr_matf64_t *)malloc(sizeof(bvr_matf64_t));
+    mat->content = (double *)calloc(width * height, sizeof(double));
     mat->width = width;
     mat->height = height;
     return mat;
 }
 
-bvr_matf32_t *bvr_matf_mul(bvr_matf32_t *lhs, bvr_matf32_t *rhs)
+bvr_matf64_t *bvr_matf_mul(bvr_matf64_t *lhs, bvr_matf64_t *rhs)
 {
     assert(lhs->width == rhs->height);
 
-    bvr_matf32_t *result = bvr_matf32_new(lhs->height, rhs->height);
+    bvr_matf64_t *result = bvr_matf64_new(lhs->height, rhs->height);
 
     unsigned int i, j, k, sum = 0;
     for (i = 0; i < lhs->height; i++)

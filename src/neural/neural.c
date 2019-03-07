@@ -14,9 +14,9 @@ void bvr_neural_net_diffuse(bvr_neural_net_t *net, float *vector, size_t length)
 
 bvr_neural_net_t *bvr_new_neural_net(size_t entry_vector_size, size_t hidden_layer_size, size_t output_layer_size)
 {
-    bvr_matf32_t *entry = bvr_matf32_new(entry_vector_size, hidden_layer_size);
-    bvr_matf32_t *hidden = bvr_matf32_new(entry_vector_size, hidden_layer_size);
-    bvr_matf32_t *output_layer = bvr_matf32_new(entry_vector_size, hidden_layer_size);
+    bvr_matf64_t *entry = bvr_matf64_new(entry_vector_size, hidden_layer_size);
+    bvr_matf64_t *hidden = bvr_matf64_new(entry_vector_size, hidden_layer_size);
+    bvr_matf64_t *output_layer = bvr_matf64_new(entry_vector_size, hidden_layer_size);
 
     bvr_neural_net_t *net = (bvr_neural_net_t *)malloc(sizeof(bvr_neural_net_t));
     net->input_layer = entry;

@@ -55,7 +55,7 @@ MunitResult filter_image_integral(const MunitParameter params[], void *user_data
 
     double res[] = {5, 7, 8, 16};
 
-    bvr_matf32_t *computed = bvr_filter_create_image_integral(&img);
+    bvr_matf64_t *computed = bvr_filter_create_image_integral(&img);
     MunitResult t_res = MUNIT_FAIL;
     if (computed == NULL)
         goto out;
@@ -75,7 +75,7 @@ MunitResult filter_image_integral_2(const MunitParameter params[], void *user_da
 
     double res[] = {5, 7, 12, 14, 8, 16, 24, 32, 13, 23, 36, 46, 16, 32, 48, 64};
 
-    bvr_matf32_t *computed = bvr_filter_create_image_integral(&img);
+    bvr_matf64_t *computed = bvr_filter_create_image_integral(&img);
     MunitResult t_res = MUNIT_FAIL;
     if (computed == NULL)
         goto out;
@@ -95,7 +95,7 @@ MunitResult filter_image_integral_3(const MunitParameter params[], void *user_da
 
     double res[] = {31, 33, 37, 70, 75, 111, 43, 71, 84, 127, 161, 222, 56, 101, 135, 200, 254, 333, 80, 148, 197, 278, 346, 444, 110, 186, 263, 371, 450, 555, 111, 222, 333, 444, 555, 666};
 
-    bvr_matf32_t *computed = bvr_filter_create_image_integral(&img);
+    bvr_matf64_t *computed = bvr_filter_create_image_integral(&img);
     MunitResult t_res = MUNIT_FAIL;
     if (computed == NULL)
         goto out;
@@ -265,15 +265,15 @@ out:
 
 MunitResult bvr_matf_mul_test(const MunitParameter params[], void *user_data_or_fixture)
 {
-    bvr_matf32_t *lhs = bvr_matf32_new(3, 3);
+    bvr_matf64_t *lhs = bvr_matf64_new(3, 3);
     float lhs_content[] = {0.9, 0.3, 0.4, 0.2, 0.8, 0.2, 0.1, 0.5, 0.6};
     memcpy(lhs->content, &lhs_content, 9);
 
-    bvr_matf32_t *rhs = bvr_matf32_new(1, 3);
+    bvr_matf64_t *rhs = bvr_matf64_new(1, 3);
     float rhs_content[] = {0.9, 0.1, 0.8};
     memcpy(rhs->content, &rhs_content, 3);
 
-    bvr_matf32_t *result = bvr_matf_mul(lhs, rhs);
+    bvr_matf64_t *result = bvr_matf_mul(lhs, rhs);
 
     float expected[] = {1.16, 0.42, 0.62};
     munit_assert_memory_equal(3, &expected[0], &result[0]);

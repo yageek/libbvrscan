@@ -21,8 +21,8 @@ typedef struct
 {
   size_t width;
   size_t height;
-  float *content;
-} bvr_matf32_t;
+  double *content;
+} bvr_matf64_t;
 
 typedef struct
 {
@@ -58,7 +58,7 @@ bvr_mat32_t *bvr_mat32_new(size_t width, size_t height);
  * @return bvr_mat8_t* 
  */
 
-bvr_matf32_t *bvr_matf32_new(size_t width, size_t height);
+bvr_matf64_t *bvr_matf64_new(size_t width, size_t height);
 
 /**
  * @brief Creates an empty `uint64_t` matrix
@@ -83,5 +83,5 @@ bvr_mat64_t *bvr_mat64_new(size_t width, size_t height);
 #define bvr_mat_set(m, w, h, val) \
   m->content[(w) + (h)*m->width] = val
 
-bvr_matf32_t *bvr_matf_mul(bvr_matf32_t *lhs, bvr_matf32_t *rhs);
+bvr_matf64_t *bvr_matf_mul(bvr_matf64_t *lhs, bvr_matf64_t *rhs);
 #endif
