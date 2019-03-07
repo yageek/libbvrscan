@@ -37,26 +37,22 @@ bvr_matf64_t *bvr_matf64_new(size_t width, size_t height)
     return mat;
 }
 
-bvr_matf64_t *bvr_matf_mul(bvr_matf64_t *lhs, bvr_matf64_t *rhs)
+void bvr_matf_mul(bvr_matf64_t *lhs, bvr_matf64_t *rhs, bvr_matf64_t *result)
 {
     assert(lhs->width == rhs->height);
 
-    bvr_matf64_t *result = bvr_matf64_new(lhs->height, rhs->height);
-
-    unsigned int i, j, k, sum = 0;
+    unsigned int i, j, k;
+    double sum = 0;
     for (i = 0; i < lhs->height; i++)
     {
         for (j = 0; j < rhs->width; j++)
         {
             for (k = 0; k < rhs->height; k++)
             {
-                sum += bvr_mat_get(lhs, i, k) * bvr_mat_get(rhs, k, j);
+                sum += bvr_mat_get(lhs, k, i) * bvr_mat_get(rhs, j, k);
             }
+            bvr_mat_set(result, j, i, sum);
+            sum = 0;
         }
-
-        bvr_mat_set(result, i, j, sum);
-        sum = 0;
     }
-
-    return result;
 }

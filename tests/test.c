@@ -266,18 +266,25 @@ out:
 MunitResult bvr_matf_mul_test(const MunitParameter params[], void *user_data_or_fixture)
 {
     bvr_matf64_t *lhs = bvr_matf64_new(3, 3);
-    float lhs_content[] = {0.9, 0.3, 0.4, 0.2, 0.8, 0.2, 0.1, 0.5, 0.6};
-    memcpy(lhs->content, &lhs_content, 9);
+    double lhs_content[] = {0.9, 0.3, 0.4, 0.2, 0.8, 0.2, 0.1, 0.5, 0.6};
+    memcpy(lhs->content, &lhs_content, 9 * 8);
 
     bvr_matf64_t *rhs = bvr_matf64_new(1, 3);
-    float rhs_content[] = {0.9, 0.1, 0.8};
-    memcpy(rhs->content, &rhs_content, 3);
+    double rhs_content[] = {0.9, 0.1, 0.8};
+    memcpy(rhs->content, &rhs_content, 3 * 8);
 
-    bvr_matf64_t *result = bvr_matf_mul(lhs, rhs);
+    bvr_matf64_t *result = bvr_matf64_new(1, 3);
+    bvr_matf_mul(lhs, rhs, result);
 
-    float expected[] = {1.16, 0.42, 0.62};
-    munit_assert_memory_equal(3, &expected[0], &result[0]);
+    double expected[] = {1.16, 0.42, 0.62};
+    unsigned int i;
+    for (i = 0; i < 3; i++)
+    {
+        munit_assert_double_equal(expected[i], bvr_mat_get(result, 0, i), 10);
+    }
     bvr_mat_free(result);
+
+    return MUNIT_OK;
 }
 
 MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_fixture)
@@ -399,14 +406,14 @@ MunitTest tests[] = {
         MUNIT_TEST_OPTION_NONE, /* options */
         NULL                    /* parameters */
     },
-    // {
-    //     "/bvr_matf_mul_test",   /* name */
-    //     bvr_matf_mul_test,      /* test */
-    //     NULL,                   /* setup */
-    //     NULL,                   /* tear_down */
-    //     MUNIT_TEST_OPTION_NONE, /* options */
-    //     NULL                    /* parameters */
-    // },
+    {
+        "/bvr_matf_mul_test",   /* name */
+        bvr_matf_mul_test,      /* test */
+        NULL,                   /* setup */
+        NULL,                   /* tear_down */
+        MUNIT_TEST_OPTION_NONE, /* options */
+        NULL                    /* parameters */
+    },
     /* Mark the end of the array with an entry where the test
    * function is NULL */
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}};

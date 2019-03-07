@@ -83,5 +83,5 @@ bvr_mat64_t *bvr_mat64_new(size_t width, size_t height);
 #define bvr_mat_set(m, w, h, val) \
   m->content[(w) + (h)*m->width] = val
 
-bvr_matf64_t *bvr_matf_mul(bvr_matf64_t *lhs, bvr_matf64_t *rhs);
+void bvr_matf_mul(bvr_matf64_t *lhs, bvr_matf64_t *rhs, bvr_matf64_t *result);
 #endif
