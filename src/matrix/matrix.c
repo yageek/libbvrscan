@@ -1,5 +1,5 @@
 #include "matrix/matrix.h"
-
+#include <assert.h>
 bvr_mat8_t *bvr_mat8_new(size_t width, size_t height)
 {
     bvr_mat8_t *mat = (bvr_mat8_t *)malloc(sizeof(bvr_mat8_t));
@@ -37,23 +37,26 @@ bvr_matf32_t *bvr_matf32_new(size_t width, size_t height)
     return mat;
 }
 
-int bvr_matf_mul(bvr_mat32_t *lhs, bvr_mat32_t *rhs, bvr_mat32_t *result)
+bvr_matf32_t *bvr_matf_mul(bvr_matf32_t *lhs, bvr_matf32_t *rhs)
 {
-    if (lhs->width != rhs->height)
-    {
-        return -1;
-    }
+    assert(lhs->width == rhs->height);
 
-    if (result->height != lhs->height && result->width != rhs->width)
-    {
-        return -1;
-    }
+    bvr_matf32_t *result = bvr_matf32_new(lhs->height, rhs->height);
 
-    unsigned int i, j;
-    for (j = 0; j < lhs->height; j++)
+    unsigned int i, j, k, sum = 0;
+    for (i = 0; i < lhs->height; i++)
     {
-        for (i = 0; i < rhs->width; i++)
+        for (j = 0; j < rhs->width; j++)
         {
+            for (k = 0; k < rhs->height; k++)
+            {
+                sum += bvr_mat_get(lhs, i, k) * bvr_mat_get(rhs, k, j);
+            }
         }
+
+        bvr_mat_set(result, i, j, sum);
+        sum = 0;
     }
+
+    return result;
 }

@@ -9,8 +9,8 @@ typedef struct
     bvr_matf32_t *hidden_layer;
     bvr_matf32_t *output_layer;
 
-    float (*activation_func)(double);
-    float (*activation_func_deriv)(double);
+    float (*activation_func)(float);
+    float (*activation_func_deriv)(float);
 
 } bvr_neural_net_t;
 
