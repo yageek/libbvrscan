@@ -31,7 +31,7 @@ bvr_matf32_t *bvr_matf32_new(size_t width, size_t height)
 {
 
     bvr_matf32_t *mat = (bvr_matf32_t *)malloc(sizeof(bvr_matf32_t));
-    mat->content = (double *)calloc(width * height, sizeof(double));
+    mat->content = (float *)calloc(width * height, sizeof(float));
     mat->width = width;
     mat->height = height;
     return mat;

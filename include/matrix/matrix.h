@@ -21,7 +21,7 @@ typedef struct
 {
   size_t width;
   size_t height;
-  double *content;
+  float *content;
 } bvr_matf32_t;
 
 typedef struct
