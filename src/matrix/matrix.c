@@ -36,3 +36,24 @@ bvr_matf32_t *bvr_matf32_new(size_t width, size_t height)
     mat->height = height;
     return mat;
 }
+
+int bvr_matf_mul(bvr_mat32_t *lhs, bvr_mat32_t *rhs, bvr_mat32_t *result)
+{
+    if (lhs->width != rhs->height)
+    {
+        return -1;
+    }
+
+    if (result->height != lhs->height && result->width != rhs->width)
+    {
+        return -1;
+    }
+
+    unsigned int i, j;
+    for (j = 0; j < lhs->height; j++)
+    {
+        for (i = 0; i < rhs->width; i++)
+        {
+        }
+    }
+}

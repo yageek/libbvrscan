@@ -8,10 +8,8 @@ float sigmoid(float x) { return 1 / (1 + exp(-x)); };
 float sigmoid_deriv(float x) { return sigmoid(x) * (1 - sigmoid(x)); };
 
 /// Diffuse
-
-bvr_neural_net_t *bvr_neural_net(float *vector, size_t length)
+void bvr_neural_net_diffuse(bvr_neural_net_t *net, float *vector, size_t length)
 {
-    // The first layer first
 }
 
 bvr_neural_net_t *bvr_new_neural_net(size_t entry_vector_size, size_t hidden_layer_size, size_t output_layer_size)
