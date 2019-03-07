@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
 #import <CoreText/CoreText.h>
+#import <CoreFoundation/CoreFoundation.h>
 
 int main(int argc, const char * argv[]) {
 
@@ -19,6 +20,13 @@ int main(int argc, const char * argv[]) {
 
     @autoreleasepool {
 
+        // We load the font normally copied at the same level
+        NSURL *fontURL = [NSURL fileURLWithPath:@"OCRB.ttf"];
+        if(!fontURL) {
+            NSLog(@"Impossible to locate the font");
+            exit(-1);
+        }       
+        
         NSString *chars = @"0123456789<+>";
         NSString * output = [[NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding] stringByAppendingPathComponent:@"generated"];
         BOOL isDir = false;
