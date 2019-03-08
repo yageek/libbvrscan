@@ -72,8 +72,8 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
 {
     uint8_t blob = 0;
 
-    bvr_mat8_t *tmp = bvr_mat8_new(src->width, src->height);
-    memcpy(tmp->content, src->content, src->width * src->height * sizeof(uint8_t));
+    bvr_mat8_t *tmp = bvr_mat8_new(src->columns, src->rows);
+    memcpy(tmp->content, src->content, src->columns * src->rows * sizeof(uint8_t));
 
     size_t blobs_count = __QUEUE_DEFAULT_SIZE;
     size_t blobs_index = 0;
@@ -83,9 +83,9 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
     __bvr_blob_node_queue_t *queue = &queue_store;
 
     int xMin = xMin, xMax, yMin, yMax;
-    for (int y = 0; y < tmp->height; y++)
+    for (int y = 0; y < tmp->rows; y++)
     {
-        for (int x = 0; x < tmp->width; x++)
+        for (int x = 0; x < tmp->columns; x++)
         {
             if (bvr_mat_get(tmp, x, y) == searched)
             {
@@ -111,7 +111,7 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
                     while (w > 0 && bvr_mat_get(tmp, w, n.y) == searched)
                         w--;
 
-                    while (e < tmp->width && bvr_mat_get(tmp, e, n.y) == searched)
+                    while (e < tmp->columns && bvr_mat_get(tmp, e, n.y) == searched)
                         e++;
 
                     xMin = _MIN(xMin, w + 1);
@@ -129,7 +129,7 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
                             _bvr_blob_queue_push(queue, node);
                         }
 
-                        if (n.y < tmp->height - 1 && bvr_mat_get(tmp, i, bottom) == searched)
+                        if (n.y < tmp->rows - 1 && bvr_mat_get(tmp, i, bottom) == searched)
                         {
                             __bvr_blob_node_t node = (__bvr_blob_node_t){i, bottom};
                             _bvr_blob_queue_push(queue, node);
@@ -210,7 +210,7 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
     bool previousInPeek = false,
          currentInPeek = false;
     int top = -1, bottom = -1, i;
-    for (i = 0; i < horizontal_proj->width; i++)
+    for (i = 0; i < horizontal_proj->columns; i++)
     {
 
         uint32_t total = bvr_mat_get(horizontal_proj, i, 0);
@@ -237,7 +237,7 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
     currentInPeek = false;
 
     int left = 0, right = 0;
-    for (i = 0; i < vertical_proj->width; i++)
+    for (i = 0; i < vertical_proj->columns; i++)
     {
         uint32_t total = bvr_mat_get(vertical_proj, i, 0);
         currentInPeek = (total >= 1);
@@ -267,11 +267,11 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
 
 bvr_mat32_t *bvr_filter_create_vertical_proj_mat(const bvr_mat8_t *src)
 {
-    bvr_mat32_t *out = bvr_mat32_new(src->width, 1);
-    for (int x = 0; x < src->width; x++)
+    bvr_mat32_t *out = bvr_mat32_new(src->columns, 1);
+    for (int x = 0; x < src->columns; x++)
     {
         uint32_t total = 0;
-        for (int y = 0; y < src->height; y++)
+        for (int y = 0; y < src->rows; y++)
         {
             total += bvr_mat_get(src, x, y);
         }
@@ -282,12 +282,12 @@ bvr_mat32_t *bvr_filter_create_vertical_proj_mat(const bvr_mat8_t *src)
 
 bvr_mat32_t *bvr_filter_create_horizontal_proj_mat(const bvr_mat8_t *src)
 {
-    bvr_mat32_t *out = bvr_mat32_new(src->height, 1);
+    bvr_mat32_t *out = bvr_mat32_new(src->rows, 1);
 
-    for (int y = 0; y < src->height; y++)
+    for (int y = 0; y < src->rows; y++)
     {
         uint32_t total = 0;
-        for (int x = 0; x < src->width; x++)
+        for (int x = 0; x < src->columns; x++)
         {
             total += bvr_mat_get(src, x, y);
         }

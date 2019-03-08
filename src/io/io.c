@@ -80,8 +80,8 @@ int bvr_io_image_grayscale_write(const bvr_mat8_t *src, const char *path_name, c
 
     // We first create the image
     CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceGray();
-    CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, src->content, src->width * src->height, NULL);
-    CGImageRef img = CGImageCreate(src->width, src->height, 8, 8, src->width, colorspace, kCGBitmapByteOrderDefault, provider, NULL, 0, kCGRenderingIntentDefault);
+    CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, src->content, src->columns * src->rows, NULL);
+    CGImageRef img = CGImageCreate(src->columns, src->columns, 8, 8, src->columns, colorspace, kCGBitmapByteOrderDefault, provider, NULL, 0, kCGRenderingIntentDefault);
     CGDataProviderRelease(provider);
     CGColorSpaceRelease(colorspace);
 
