@@ -80,7 +80,7 @@ bvr_mat64_t *bvr_mat64_new( size_t rows,size_t columns);
 #define bvr_mat_get(m,  r,  c) \
   m->content[(c) + (r)*m->columns]
 
-#define bvr_mat_set(m, c, r, val) \
+#define bvr_mat_set(m,  r,  c,  val) \
   m->content[(c) + (r)*m->columns] = val
 
 void bvr_matf_mul(bvr_matf64_t *lhs, bvr_matf64_t *rhs, bvr_matf64_t *result);

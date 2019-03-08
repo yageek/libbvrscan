@@ -11,7 +11,7 @@ MunitResult matrix_init_free(const MunitParameter params[], void *user_data_or_f
     munit_assert_uint8(bvr_mat_get(mat,  0,  0), ==, 0);
     munit_assert_uint8(bvr_mat_get(mat,  0,  1), ==, 0);
 
-    bvr_mat_set(mat, 0, 0, 255);
+    bvr_mat_set(mat,  0,  0,  255);
     munit_assert_uint8(bvr_mat_get(mat,  0,  0), ==, 255);
 
     bvr_mat_free(mat);

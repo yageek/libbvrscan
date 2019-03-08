@@ -87,7 +87,7 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
     {
         for (int x = 0; x < tmp->columns; x++)
         {
-            if (bvr_mat_get(tmp,  y) == searched,  x)
+            if (bvr_mat_get(tmp, y, x) == searched)
             {
                 xMin = x;
                 xMax = x;
@@ -108,10 +108,10 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
                     int w = n.x;
                     int e = n.x;
 
-                    while (w > 0 && bvr_mat_get(tmp,  n.y) == searched,  w)
+                    while (w > 0 && bvr_mat_get(tmp, n.y, w) == searched)
                         w--;
 
-                    while (e < tmp->columns && bvr_mat_get(tmp,  n.y) == searched,  e)
+                    while (e < tmp->columns && bvr_mat_get(tmp, n.y, e) == searched)
                         e++;
 
                     xMin = _MIN(xMin, w + 1);
@@ -123,20 +123,20 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
                     {
                         int top = n.y - 1;
                         int bottom = n.y + 1;
-                        if (n.y > 1 && bvr_mat_get(tmp,  top) == searched,  i)
+                        if (n.y > 1 && bvr_mat_get(tmp, top, i) == searched)
                         {
                             __bvr_blob_node_t node = (__bvr_blob_node_t){i, top};
                             _bvr_blob_queue_push(queue, node);
                         }
 
-                        if (n.y < tmp->rows - 1 && bvr_mat_get(tmp,  bottom) == searched,  i)
+                        if (n.y < tmp->rows - 1 && bvr_mat_get(tmp, bottom, i) == searched)
                         {
                             __bvr_blob_node_t node = (__bvr_blob_node_t){i, bottom};
                             _bvr_blob_queue_push(queue, node);
                         }
 
                         // Treat point
-                        bvr_mat_set(tmp, i, n.y, replace);
+                        bvr_mat_set(tmp,  n.y,  i,  replace);
                     }
                 }
                 blob++;
@@ -275,7 +275,7 @@ bvr_mat32_t *bvr_filter_create_vertical_proj_mat(const bvr_mat8_t *src)
         {
             total += bvr_mat_get(src,  y,  x);
         }
-        bvr_mat_set(out, x, 0, total);
+        bvr_mat_set(out,  0,  x,  total);
     }
     return out;
 }
@@ -291,7 +291,7 @@ bvr_mat32_t *bvr_filter_create_horizontal_proj_mat(const bvr_mat8_t *src)
         {
             total += bvr_mat_get(src,  y,  x);
         }
-        bvr_mat_set(out, y, 0, total);
+        bvr_mat_set(out,  0,  y,  total);
     }
     return out;
 }
