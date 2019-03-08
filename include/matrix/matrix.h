@@ -77,7 +77,7 @@ bvr_mat64_t *bvr_mat64_new( size_t rows,size_t columns);
     free(m);            \
   } while (0)
 
-#define bvr_mat_get(m, c, r) \
+#define bvr_mat_get(m,  r,  c) \
   m->content[(c) + (r)*m->columns]
 
 #define bvr_mat_set(m, c, r, val) \

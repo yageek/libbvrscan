@@ -49,7 +49,7 @@ void bvr_matf_mul(bvr_matf64_t *lhs, bvr_matf64_t *rhs, bvr_matf64_t *result)
         {
             for (k = 0; k < rhs->rows; k++)
             {
-                sum += bvr_mat_get(lhs, k, i) * bvr_mat_get(rhs, j, k);
+                sum += bvr_mat_get(lhs,  i,  k) * bvr_mat_get(rhs,  k,  j);
             }
             bvr_mat_set(result, j, i, sum);
             sum = 0;

@@ -8,11 +8,11 @@ MunitResult matrix_init_free(const MunitParameter params[], void *user_data_or_f
     bvr_mat8_t *mat = bvr_mat8_new( 1,10);
 
     // Should initialize with 0
-    munit_assert_uint8(bvr_mat_get(mat, 0, 0), ==, 0);
-    munit_assert_uint8(bvr_mat_get(mat, 1, 0), ==, 0);
+    munit_assert_uint8(bvr_mat_get(mat,  0,  0), ==, 0);
+    munit_assert_uint8(bvr_mat_get(mat,  0,  1), ==, 0);
 
     bvr_mat_set(mat, 0, 0, 255);
-    munit_assert_uint8(bvr_mat_get(mat, 0, 0), ==, 255);
+    munit_assert_uint8(bvr_mat_get(mat,  0,  0), ==, 255);
 
     bvr_mat_free(mat);
     return MUNIT_OK;
@@ -280,7 +280,7 @@ MunitResult bvr_matf_mul_test(const MunitParameter params[], void *user_data_or_
     unsigned int i;
     for (i = 0; i < 3; i++)
     {
-        munit_assert_double_equal(expected[i], bvr_mat_get(result, 0, i), 10);
+        munit_assert_double_equal(expected[i], bvr_mat_get(result,  i,  0), 10);
     }
     bvr_mat_free(result);
 
