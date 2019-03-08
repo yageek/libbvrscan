@@ -83,21 +83,22 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
     __bvr_blob_node_queue_t *queue = &queue_store;
 
     int xMin = xMin, xMax, yMin, yMax;
-    for (int y = 0; y < tmp->rows; y++)
+    int row, col;
+    for (int row = 0; row < tmp->rows; row++)
     {
-        for (int x = 0; x < tmp->columns; x++)
+        for (col= 0; col < tmp->columns; col++)
         {
-            if (bvr_mat_get(tmp, y, x) == searched)
+            if (bvr_mat_get(tmp, row, col) == searched)
             {
-                xMin = x;
-                xMax = x;
-                yMin = y;
-                yMax = y;
+                xMin = col;
+                xMax = col;
+                yMin = row;
+                yMax = row;
 
                 // Flood-fill starts here
                 _bvr_blob_queue_clear(queue);
 
-                __bvr_blob_node_t node = (__bvr_blob_node_t){x, y};
+                __bvr_blob_node_t node = (__bvr_blob_node_t){col, row};
                 _bvr_blob_queue_push(queue, node);
 
                 while (!_bvr_blob_queue_is_empty(queue))
@@ -268,14 +269,15 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
 bvr_mat32_t *bvr_filter_create_vertical_proj_mat(const bvr_mat8_t *src)
 {
     bvr_mat32_t *out = bvr_mat32_new( 1,src->columns);
-    for (int x = 0; x < src->columns; x++)
+    int col, row;
+    for (col = 0; col < src->columns; col++)
     {
         uint32_t total = 0;
-        for (int y = 0; y < src->rows; y++)
+        for (row = 0; row < src->rows; row++)
         {
-            total += bvr_mat_get(src,  y,  x);
+            total += bvr_mat_get(src,  row,  col);
         }
-        bvr_mat_set(out,  0,  x,  total);
+        bvr_mat_set(out,  0,  col,  total);
     }
     return out;
 }
@@ -284,14 +286,15 @@ bvr_mat32_t *bvr_filter_create_horizontal_proj_mat(const bvr_mat8_t *src)
 {
     bvr_mat32_t *out = bvr_mat32_new( 1,src->rows);
 
-    for (int y = 0; y < src->rows; y++)
+    int row, col;
+    for (row = 0; row < src->rows; row++)
     {
         uint32_t total = 0;
-        for (int x = 0; x < src->columns; x++)
+        for (col = 0; col < src->columns; col++)
         {
-            total += bvr_mat_get(src,  y,  x);
+            total += bvr_mat_get(src,  row,  col);
         }
-        bvr_mat_set(out,  0,  y,  total);
+        bvr_mat_set(out,  0,  row,  total);
     }
     return out;
 }
