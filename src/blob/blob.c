@@ -72,7 +72,7 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
 {
     uint8_t blob = 0;
 
-    bvr_mat8_t *tmp = bvr_mat8_new(src->columns, src->rows);
+    bvr_mat8_t *tmp = bvr_mat8_new( src->rows,src->columns);
     memcpy(tmp->content, src->content, src->columns * src->rows * sizeof(uint8_t));
 
     size_t blobs_count = __QUEUE_DEFAULT_SIZE;
@@ -267,7 +267,7 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
 
 bvr_mat32_t *bvr_filter_create_vertical_proj_mat(const bvr_mat8_t *src)
 {
-    bvr_mat32_t *out = bvr_mat32_new(src->columns, 1);
+    bvr_mat32_t *out = bvr_mat32_new( 1,src->columns);
     for (int x = 0; x < src->columns; x++)
     {
         uint32_t total = 0;
@@ -282,7 +282,7 @@ bvr_mat32_t *bvr_filter_create_vertical_proj_mat(const bvr_mat8_t *src)
 
 bvr_mat32_t *bvr_filter_create_horizontal_proj_mat(const bvr_mat8_t *src)
 {
-    bvr_mat32_t *out = bvr_mat32_new(src->rows, 1);
+    bvr_mat32_t *out = bvr_mat32_new( 1,src->rows);
 
     for (int y = 0; y < src->rows; y++)
     {

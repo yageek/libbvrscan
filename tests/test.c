@@ -5,7 +5,7 @@
 /* A test runs various assertions, then calls PASS(), FAIL(), or SKIP(). */
 MunitResult matrix_init_free(const MunitParameter params[], void *user_data_or_fixture)
 {
-    bvr_mat8_t *mat = bvr_mat8_new(10, 1);
+    bvr_mat8_t *mat = bvr_mat8_new( 1,10);
 
     // Should initialize with 0
     munit_assert_uint8(bvr_mat_get(mat, 0, 0), ==, 0);
@@ -136,7 +136,7 @@ MunitResult blob_test_flood_fill(const MunitParameter params[], void *user_data_
 {
     uint8_t src[] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-    bvr_mat8_t *img = bvr_mat8_new(7, 5);
+    bvr_mat8_t *img = bvr_mat8_new( 5,7);
     memcpy(img->content, &src[0], 7 * 5);
 
     bvr_blob_t *array = NULL;
@@ -166,7 +166,7 @@ MunitResult blob_test_flood_projections(const MunitParameter params[], void *use
 {
     uint8_t src[] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-    bvr_mat8_t *img = bvr_mat8_new(7, 5);
+    bvr_mat8_t *img = bvr_mat8_new( 5,7);
     memcpy(img->content, &src[0], 7 * 5);
 
     bvr_blob_t *array = NULL;
@@ -265,15 +265,15 @@ out:
 
 MunitResult bvr_matf_mul_test(const MunitParameter params[], void *user_data_or_fixture)
 {
-    bvr_matf64_t *lhs = bvr_matf64_new(3, 3);
+    bvr_matf64_t *lhs = bvr_matf64_new( 3,3);
     double lhs_content[] = {0.9, 0.3, 0.4, 0.2, 0.8, 0.2, 0.1, 0.5, 0.6};
     memcpy(lhs->content, &lhs_content, 9 * 8);
 
-    bvr_matf64_t *rhs = bvr_matf64_new(1, 3);
+    bvr_matf64_t *rhs = bvr_matf64_new( 3,1);
     double rhs_content[] = {0.9, 0.1, 0.8};
     memcpy(rhs->content, &rhs_content, 3 * 8);
 
-    bvr_matf64_t *result = bvr_matf64_new(1, 3);
+    bvr_matf64_t *result = bvr_matf64_new( 3,1);
     bvr_matf_mul(lhs, rhs, result);
 
     double expected[] = {1.16, 0.42, 0.62};
