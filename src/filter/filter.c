@@ -103,37 +103,37 @@ bvr_matf64_t *bvr_filter_create_image_integral(const bvr_mat8_t *src)
     return dst;
 }
 
-int __bvr_bounded_column(const bvr_matf64_t *m, int w)
+int __bvr_bounded_column(const bvr_matf64_t *m, int col)
 {
 
-    if (w < 0)
-        w = 0;
-    if (w >= m->columns)
-        w = m->columns - 1;
-    return w;
+    if (col < 0)
+        col = 0;
+    if (col >= m->columns)
+        col = m->columns - 1;
+    return col;
 }
 
-int __bvr_bounded_row(const bvr_matf64_t *m, int h)
+int __bvr_bounded_row(const bvr_matf64_t *m, int row)
 {
 
-    if (h < 0)
-        h = 0;
-    if (h >= m->rows)
-        h = m->rows - 1;
-    return h;
+    if (row < 0)
+        row = 0;
+    if (row >= m->rows)
+        row = m->rows - 1;
+    return row;
 }
 
-double __bvr_mat_bounded_get(const bvr_matf64_t *m, int r, int c)
+double __bvr_mat_bounded_get(const bvr_matf64_t *m, int row, int col)
 {   
-     return bvr_mat_get(m, __bvr_bounded_row(m, r), __bvr_bounded_column(m, c));
+     return bvr_mat_get(m, __bvr_bounded_row(m, row), __bvr_bounded_column(m, col));
 }
 
-double __bvr_sum_w(const bvr_matf64_t *ii, size_t w_h, int x, int y)
+double __bvr_sum_w(const bvr_matf64_t *ii, size_t w_h, int row, int col)
 {
-    double a = __bvr_mat_bounded_get(ii, y - w_h,  x - w_h);
-    double b = __bvr_mat_bounded_get(ii, y - w_h, x + w_h - 1);
-    double c = __bvr_mat_bounded_get(ii, y + w_h - 1, x - w_h );
-    double d = __bvr_mat_bounded_get(ii, y + w_h - 1, x + w_h - 1);
+    double a = __bvr_mat_bounded_get(ii, row - w_h,  col - w_h);
+    double b = __bvr_mat_bounded_get(ii, row - w_h, col + w_h - 1);
+    double c = __bvr_mat_bounded_get(ii, row + w_h - 1, col - w_h );
+    double d = __bvr_mat_bounded_get(ii, row + w_h - 1, col + w_h - 1);
     double sum = a + d - b - c;
     return sum;
 }
@@ -147,26 +147,26 @@ bvr_mat8_t *bvr_filter_sauvola(const bvr_mat8_t *src, const double k, const size
     bvr_mat8_t *out = bvr_mat8_new( src->rows,src->columns);
 
     int w_h = round(w / 2);
-    int y, x;
+    int row, col;
 
-    for (y = 0; y < src->rows; y++)
+    for (row = 0; row < src->rows; row++)
     {
-        for (x = 0; x < src->columns; x++)
+        for (col = 0; col < src->columns; col++)
         {
-            double val = bvr_mat_get(src,  y,  x);
-            bvr_mat_set(src2,  y,  x,  val * val);
+            double val = bvr_mat_get(src,  row,  col);
+            bvr_mat_set(src2,  row,  col,  val * val);
         }
     }
 
     bvr_matf64_t *s2 = bvr_filter_create_image_fintegral(src2);
 
-    for (y = 0; y < ii->rows; y++)
+    for (row = 0; row < ii->rows; row++)
     {
-        for (x = 0; x < ii->columns; x++)
+        for (col = 0; col < ii->columns; col++)
         {
             double n = (double)w * (double)w;
-            double s1_ = __bvr_sum_w(s1, w_h, x, y);
-            double s2_ = __bvr_sum_w(s2, w_h, x, y);
+            double s1_ = __bvr_sum_w(s1, w_h, row, col);
+            double s2_ = __bvr_sum_w(s2, w_h, row, col);
 
             double variance = 1 / n * (s2_ - s1_ * s1_ / n);
             double mean = s1_ / n;
@@ -174,14 +174,14 @@ bvr_mat8_t *bvr_filter_sauvola(const bvr_mat8_t *src, const double k, const size
             double stddev = sqrt(variance);
             double threshold = mean * (1 + k * ((stddev / 128.0) - 1));
 
-            double current = (double)bvr_mat_get(src,  y,  x);
+            double current = (double)bvr_mat_get(src,  row,  col);
             if (current <= threshold)
             {
-                bvr_mat_set(out,  y,  x,  foreground); //foreground
+                bvr_mat_set(out,  row,  col,  foreground); //foreground
             }
             else
             {
-                bvr_mat_set(out,  y,  x,  background); // Background
+                bvr_mat_set(out,  row,  col,  background); // Background
             }
         }
     }
