@@ -55,7 +55,7 @@ MunitResult filter_image_integral(const MunitParameter params[], void *user_data
 
     double res[] = {5, 7, 8, 16};
 
-    bvr_matf64_t *computed = bvr_filter_create_image_integral(&img);
+    bvr_mat_real_t *computed = bvr_filter_create_image_integral(&img);
     MunitResult t_res = MUNIT_FAIL;
     if (computed == NULL)
         goto out;
@@ -75,7 +75,7 @@ MunitResult filter_image_integral_2(const MunitParameter params[], void *user_da
 
     double res[] = {5, 7, 12, 14, 8, 16, 24, 32, 13, 23, 36, 46, 16, 32, 48, 64};
 
-    bvr_matf64_t *computed = bvr_filter_create_image_integral(&img);
+    bvr_mat_real_t *computed = bvr_filter_create_image_integral(&img);
     MunitResult t_res = MUNIT_FAIL;
     if (computed == NULL)
         goto out;
@@ -95,7 +95,7 @@ MunitResult filter_image_integral_3(const MunitParameter params[], void *user_da
 
     double res[] = {31, 33, 37, 70, 75, 111, 43, 71, 84, 127, 161, 222, 56, 101, 135, 200, 254, 333, 80, 148, 197, 278, 346, 444, 110, 186, 263, 371, 450, 555, 111, 222, 333, 444, 555, 666};
 
-    bvr_matf64_t *computed = bvr_filter_create_image_integral(&img);
+    bvr_mat_real_t *computed = bvr_filter_create_image_integral(&img);
     MunitResult t_res = MUNIT_FAIL;
     if (computed == NULL)
         goto out;
@@ -263,18 +263,18 @@ out:
     return res;
 }
 
-MunitResult bvr_matf_mul_test(const MunitParameter params[], void *user_data_or_fixture)
+MunitResult bvr_mat_real_mul_test(const MunitParameter params[], void *user_data_or_fixture)
 {
-    bvr_matf64_t *lhs = bvr_matf64_new(3, 3);
+    bvr_mat_real_t *lhs = bvr_mat_real_new(3, 3);
     double lhs_content[] = {0.9, 0.3, 0.4, 0.2, 0.8, 0.2, 0.1, 0.5, 0.6};
     memcpy(lhs->content, &lhs_content, 9 * 8);
 
-    bvr_matf64_t *rhs = bvr_matf64_new(3, 1);
+    bvr_mat_real_t *rhs = bvr_mat_real_new(3, 1);
     double rhs_content[] = {0.9, 0.1, 0.8};
     memcpy(rhs->content, &rhs_content, 3 * 8);
 
-    bvr_matf64_t *result = bvr_matf64_new(3, 1);
-    bvr_matf_mul(lhs, rhs, result);
+    bvr_mat_real_t *result = bvr_mat_real_new(3, 1);
+    bvr_mat_real_mul(lhs, rhs, result);
 
     double expected[] = {1.16, 0.42, 0.62};
     unsigned int i;
@@ -292,12 +292,12 @@ MunitResult bvr_matf_mul_test(const MunitParameter params[], void *user_data_or_
 double ten_times(double val) { return val * 10; };
 MunitResult bvr_test_matrix_scalar_mul(const MunitParameter params[], void *user_data_or_fixture)
 {
-    bvr_matf64_t *mat = bvr_matf64_new(3, 1);
+    bvr_mat_real_t *mat = bvr_mat_real_new(3, 1);
     double mat_content[] = {0.9, 0.1, 0.8};
     memcpy(mat->content, &mat_content, 3 * 8);
 
-    bvr_matf64_t *result = bvr_matf64_new(3, 1);
-    bvr_matf64_t *result_func = bvr_matf64_new(3, 1);
+    bvr_mat_real_t *result = bvr_mat_real_new(3, 1);
+    bvr_mat_real_t *result_func = bvr_mat_real_new(3, 1);
     double expected[] = {9.0, 1.0, 8.0};
     bvr_mat_scalar_mul(mat, 10.0, result);
     bvr_mat_apply_scalar_func(mat, ten_times, result_func);
@@ -311,6 +311,8 @@ MunitResult bvr_test_matrix_scalar_mul(const MunitParameter params[], void *user
 
     bvr_mat_free(result);
     bvr_mat_free(mat);
+
+    return MUNIT_OK;
 }
 MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_fixture)
 {
@@ -333,7 +335,6 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
     bvr_blobs_projections(filtered, &blobs, &len);
     munit_assert_size(len, ==, 42);
     t_res = MUNIT_OK;
-free_image:
     bvr_mat_free(gray);
     bvr_mat_free(filtered);
     free(blobs);
@@ -342,6 +343,36 @@ free_source:
 out:
     return res;
 }
+
+MunitResult bvr_neural_book(const MunitParameter params[], void *user_data_or_fixture)
+{
+
+    // Inputs
+    bvr_mat_real_t *input = bvr_mat_real_new(3, 1);
+    const double input_values[] = {0.9, 0.1, 0.8};
+    memcpy(input->content, &input_values[0], 3 * 8);
+
+    bvr_mat_real_t *w_input_hidden = bvr_mat_real_new(3, 3);
+    const double w[] = {0.9, 0.3, 0.4, 0.2, 0.8, 0.2, 0.1, 0.5, 0.6};
+    memcpy(w_input_hidden->content, &w[0], 9 * 8);
+    // bvr_mat_print(w_input_hidden);
+
+    bvr_mat_real_t *result = bvr_mat_real_new(3, 1);
+    bvr_mat_real_mul(w_input_hidden, input, result);
+
+    bvr_mat_free(w_input_hidden);
+
+    // bvr_mat_print(result);
+
+    // Diffuse attempt
+    bvr_neural_net_t *net = bvr_new_neural_net(3, 3, 3);
+    bvr_neural_net_diffuse(net, input);
+
+    bvr_neural_net_free(net);
+    bvr_mat_free(input);
+    return MUNIT_OK;
+}
+
 MunitTest tests[] = {
     {
         "/io_load_jpg",         /* name */
@@ -432,12 +463,12 @@ MunitTest tests[] = {
         NULL                    /* parameters */
     },
     {
-        "/bvr_matf_mul_test",   /* name */
-        bvr_matf_mul_test,      /* test */
-        NULL,                   /* setup */
-        NULL,                   /* tear_down */
-        MUNIT_TEST_OPTION_NONE, /* options */
-        NULL                    /* parameters */
+        "/bvr_mat_real_mul_test", /* name */
+        bvr_mat_real_mul_test,    /* test */
+        NULL,                     /* setup */
+        NULL,                     /* tear_down */
+        MUNIT_TEST_OPTION_NONE,   /* options */
+        NULL                      /* parameters */
     },
     {
         "/bvr_test_matrix_scalar_mul", /* name */
@@ -446,6 +477,14 @@ MunitTest tests[] = {
         NULL,                          /* tear_down */
         MUNIT_TEST_OPTION_NONE,        /* options */
         NULL                           /* parameters */
+    },
+    {
+        "/bvr_neural_book",     /* name */
+        bvr_neural_book,        /* test */
+        NULL,                   /* setup */
+        NULL,                   /* tear_down */
+        MUNIT_TEST_OPTION_NONE, /* options */
+        NULL                    /* parameters */
     },
     /* Mark the end of the array with an entry where the test
    * function is NULL */

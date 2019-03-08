@@ -84,7 +84,7 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
 
     int xMin = xMin, xMax, yMin, yMax;
     int row, col;
-    for (int row = 0; row < tmp->rows; row++)
+    for (row = 0; row < tmp->rows; row++)
     {
         for (col = 0; col < tmp->columns; col++)
         {

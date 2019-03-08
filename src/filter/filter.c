@@ -32,10 +32,10 @@ bvr_mat8_t *bvr_filter_create_grayscale(const bvr_io_image_source_t *src)
     return mat;
 }
 
-bvr_matf64_t *bvr_filter_create_image_fintegral(const bvr_matf64_t *src)
+bvr_mat_real_t *bvr_filter_create_image_fintegral(const bvr_mat_real_t *src)
 {
 
-    bvr_matf64_t *dst = bvr_matf64_new(src->rows, src->columns);
+    bvr_mat_real_t *dst = bvr_mat_real_new(src->rows, src->columns);
     size_t rows = src->rows;
     size_t columns = src->columns;
 
@@ -67,10 +67,10 @@ bvr_matf64_t *bvr_filter_create_image_fintegral(const bvr_matf64_t *src)
 
     return dst;
 }
-bvr_matf64_t *bvr_filter_create_image_integral(const bvr_mat8_t *src)
+bvr_mat_real_t *bvr_filter_create_image_integral(const bvr_mat8_t *src)
 {
 
-    bvr_matf64_t *dst = bvr_matf64_new(src->rows, src->columns);
+    bvr_mat_real_t *dst = bvr_mat_real_new(src->rows, src->columns);
     size_t rows = src->rows;
     size_t columns = src->columns;
 
@@ -103,7 +103,7 @@ bvr_matf64_t *bvr_filter_create_image_integral(const bvr_mat8_t *src)
     return dst;
 }
 
-int __bvr_bounded_column(const bvr_matf64_t *m, int col)
+int __bvr_bounded_column(const bvr_mat_real_t *m, int col)
 {
 
     if (col < 0)
@@ -113,7 +113,7 @@ int __bvr_bounded_column(const bvr_matf64_t *m, int col)
     return col;
 }
 
-int __bvr_bounded_row(const bvr_matf64_t *m, int row)
+int __bvr_bounded_row(const bvr_mat_real_t *m, int row)
 {
 
     if (row < 0)
@@ -123,12 +123,12 @@ int __bvr_bounded_row(const bvr_matf64_t *m, int row)
     return row;
 }
 
-double __bvr_mat_bounded_get(const bvr_matf64_t *m, int row, int col)
+double __bvr_mat_bounded_get(const bvr_mat_real_t *m, int row, int col)
 {
     return bvr_mat_get(m, __bvr_bounded_row(m, row), __bvr_bounded_column(m, col));
 }
 
-double __bvr_sum_w(const bvr_matf64_t *ii, size_t w_h, int row, int col)
+double __bvr_sum_w(const bvr_mat_real_t *ii, size_t w_h, int row, int col)
 {
     double a = __bvr_mat_bounded_get(ii, row - w_h, col - w_h);
     double b = __bvr_mat_bounded_get(ii, row - w_h, col + w_h - 1);
@@ -141,9 +141,9 @@ double __bvr_sum_w(const bvr_matf64_t *ii, size_t w_h, int row, int col)
 bvr_mat8_t *bvr_filter_sauvola(const bvr_mat8_t *src, const double k, const size_t w, uint8_t foreground, uint8_t background)
 {
     // Integral image gives the sum
-    bvr_matf64_t *ii = bvr_filter_create_image_integral(src);
-    bvr_matf64_t *s1 = ii;
-    bvr_matf64_t *src2 = bvr_matf64_new(src->rows, src->columns);
+    bvr_mat_real_t *ii = bvr_filter_create_image_integral(src);
+    bvr_mat_real_t *s1 = ii;
+    bvr_mat_real_t *src2 = bvr_mat_real_new(src->rows, src->columns);
     bvr_mat8_t *out = bvr_mat8_new(src->rows, src->columns);
 
     int w_h = round(w / 2);
@@ -158,7 +158,7 @@ bvr_mat8_t *bvr_filter_sauvola(const bvr_mat8_t *src, const double k, const size
         }
     }
 
-    bvr_matf64_t *s2 = bvr_filter_create_image_fintegral(src2);
+    bvr_mat_real_t *s2 = bvr_filter_create_image_fintegral(src2);
 
     for (row = 0; row < ii->rows; row++)
     {

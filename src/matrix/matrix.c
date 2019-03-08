@@ -28,17 +28,17 @@ bvr_mat64_t *bvr_mat64_new(size_t rows, size_t columns)
     return mat;
 }
 
-bvr_matf64_t *bvr_matf64_new(size_t rows, size_t columns)
+bvr_mat_real_t *bvr_mat_real_new(size_t rows, size_t columns)
 {
 
-    bvr_matf64_t *mat = (bvr_matf64_t *)malloc(sizeof(bvr_matf64_t));
+    bvr_mat_real_t *mat = (bvr_mat_real_t *)malloc(sizeof(bvr_mat_real_t));
     mat->content = (double *)calloc(columns * rows, sizeof(double));
     mat->columns = columns;
     mat->rows = rows;
     return mat;
 }
 
-void bvr_matf_mul(const bvr_matf64_t *lhs, const bvr_matf64_t *rhs, bvr_matf64_t *result)
+void bvr_mat_real_mul(const bvr_mat_real_t *lhs, const bvr_mat_real_t *rhs, bvr_mat_real_t *result)
 {
     assert(lhs->columns == rhs->rows);
 
@@ -58,7 +58,7 @@ void bvr_matf_mul(const bvr_matf64_t *lhs, const bvr_matf64_t *rhs, bvr_matf64_t
     }
 }
 
-void bvr_mat_scalar_mul(const bvr_matf64_t *mat, double scalar, bvr_matf64_t *result)
+void bvr_mat_scalar_mul(const bvr_mat_real_t *mat, double scalar, bvr_mat_real_t *result)
 {
     int row, col;
     for (row = 0; row < mat->rows; row++)
@@ -71,7 +71,7 @@ void bvr_mat_scalar_mul(const bvr_matf64_t *mat, double scalar, bvr_matf64_t *re
     }
 }
 
-void bvr_mat_apply_scalar_func(const bvr_matf64_t *mat, mat_scalar_func f, bvr_matf64_t *result)
+void bvr_mat_apply_scalar_func(const bvr_mat_real_t *mat, mat_scalar_func f, bvr_mat_real_t *result)
 {
     int row, col;
     for (row = 0; row < mat->rows; row++)
