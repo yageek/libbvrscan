@@ -283,10 +283,35 @@ MunitResult bvr_matf_mul_test(const MunitParameter params[], void *user_data_or_
         munit_assert_double_equal(expected[i], bvr_mat_get(result, i, 0), 10);
     }
     bvr_mat_free(result);
+    bvr_mat_free(lhs);
+    bvr_mat_free(rhs);
 
     return MUNIT_OK;
 }
 
+double ten_times(double val) { return val * 10; };
+MunitResult bvr_test_matrix_scalar_mul(const MunitParameter params[], void *user_data_or_fixture)
+{
+    bvr_matf64_t *mat = bvr_matf64_new(3, 1);
+    double mat_content[] = {0.9, 0.1, 0.8};
+    memcpy(mat->content, &mat_content, 3 * 8);
+
+    bvr_matf64_t *result = bvr_matf64_new(3, 1);
+    bvr_matf64_t *result_func = bvr_matf64_new(3, 1);
+    double expected[] = {9.0, 1.0, 8.0};
+    bvr_mat_scalar_mul(mat, 10.0, result);
+    bvr_mat_apply_scalar_func(mat, ten_times, result_func);
+
+    unsigned int i;
+    for (i = 0; i < 3; i++)
+    {
+        munit_assert_double_equal(expected[i], bvr_mat_get(result, i, 0), 10);
+        munit_assert_double_equal(expected[i], bvr_mat_get(result_func, i, 0), 10);
+    }
+
+    bvr_mat_free(result);
+    bvr_mat_free(mat);
+}
 MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_fixture)
 {
     const char *input_image_name = "samples/small_bvr.jpg";
@@ -413,6 +438,14 @@ MunitTest tests[] = {
         NULL,                   /* tear_down */
         MUNIT_TEST_OPTION_NONE, /* options */
         NULL                    /* parameters */
+    },
+    {
+        "/bvr_test_matrix_scalar_mul", /* name */
+        bvr_test_matrix_scalar_mul,    /* test */
+        NULL,                          /* setup */
+        NULL,                          /* tear_down */
+        MUNIT_TEST_OPTION_NONE,        /* options */
+        NULL                           /* parameters */
     },
     /* Mark the end of the array with an entry where the test
    * function is NULL */

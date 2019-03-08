@@ -1,5 +1,6 @@
 #include "matrix/matrix.h"
 #include <assert.h>
+
 bvr_mat8_t *bvr_mat8_new(size_t rows, size_t columns)
 {
     bvr_mat8_t *mat = (bvr_mat8_t *)malloc(sizeof(bvr_mat8_t));
@@ -37,7 +38,7 @@ bvr_matf64_t *bvr_matf64_new(size_t rows, size_t columns)
     return mat;
 }
 
-void bvr_matf_mul(bvr_matf64_t *lhs, bvr_matf64_t *rhs, bvr_matf64_t *result)
+void bvr_matf_mul(const bvr_matf64_t *lhs, const bvr_matf64_t *rhs, bvr_matf64_t *result)
 {
     assert(lhs->columns == rhs->rows);
 
@@ -53,6 +54,32 @@ void bvr_matf_mul(bvr_matf64_t *lhs, bvr_matf64_t *rhs, bvr_matf64_t *result)
             }
             bvr_mat_set(result, i, j, sum);
             sum = 0;
+        }
+    }
+}
+
+void bvr_mat_scalar_mul(const bvr_matf64_t *mat, double scalar, bvr_matf64_t *result)
+{
+    int row, col;
+    for (row = 0; row < mat->rows; row++)
+    {
+        for (col = 0; col < mat->columns; col++)
+        {
+            double val = bvr_mat_get(mat, row, col) * scalar;
+            bvr_mat_set(result, row, col, val);
+        }
+    }
+}
+
+void bvr_mat_apply_scalar_func(const bvr_matf64_t *mat, mat_scalar_func f, bvr_matf64_t *result)
+{
+    int row, col;
+    for (row = 0; row < mat->rows; row++)
+    {
+        for (col = 0; col < mat->columns; col++)
+        {
+            double val = f(bvr_mat_get(mat, row, col));
+            bvr_mat_set(result, row, col, val);
         }
     }
 }
