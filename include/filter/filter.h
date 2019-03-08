@@ -1,8 +1,8 @@
 #ifndef __BVRCORE_FILTER_H
 #define __BVRCORE_FILTER_H
 
-#include "matrix/matrix.h"
 #include "io/io.h"
+#include "matrix/matrix.h"
 /**
  * @brief Compute a grayscale matrix from an image
  * 

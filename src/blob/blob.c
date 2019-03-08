@@ -72,7 +72,7 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
 {
     uint8_t blob = 0;
 
-    bvr_mat8_t *tmp = bvr_mat8_new( src->rows,src->columns);
+    bvr_mat8_t *tmp = bvr_mat8_new(src->rows, src->columns);
     memcpy(tmp->content, src->content, src->columns * src->rows * sizeof(uint8_t));
 
     size_t blobs_count = __QUEUE_DEFAULT_SIZE;
@@ -86,7 +86,7 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
     int row, col;
     for (int row = 0; row < tmp->rows; row++)
     {
-        for (col= 0; col < tmp->columns; col++)
+        for (col = 0; col < tmp->columns; col++)
         {
             if (bvr_mat_get(tmp, row, col) == searched)
             {
@@ -137,7 +137,7 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
                         }
 
                         // Treat point
-                        bvr_mat_set(tmp,  n.y,  i,  replace);
+                        bvr_mat_set(tmp, n.y, i, replace);
                     }
                 }
                 blob++;
@@ -214,7 +214,7 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
     for (i = 0; i < horizontal_proj->columns; i++)
     {
 
-        uint32_t total = bvr_mat_get(horizontal_proj,  0,  i);
+        uint32_t total = bvr_mat_get(horizontal_proj, 0, i);
         currentInPeek = total >= 1;
 
         if (currentInPeek && !previousInPeek)
@@ -240,7 +240,7 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
     int left = 0, right = 0;
     for (i = 0; i < vertical_proj->columns; i++)
     {
-        uint32_t total = bvr_mat_get(vertical_proj,  0,  i);
+        uint32_t total = bvr_mat_get(vertical_proj, 0, i);
         currentInPeek = (total >= 1);
 
         // Starts character
@@ -268,23 +268,23 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
 
 bvr_mat32_t *bvr_filter_create_vertical_proj_mat(const bvr_mat8_t *src)
 {
-    bvr_mat32_t *out = bvr_mat32_new( 1,src->columns);
+    bvr_mat32_t *out = bvr_mat32_new(1, src->columns);
     int col, row;
     for (col = 0; col < src->columns; col++)
     {
         uint32_t total = 0;
         for (row = 0; row < src->rows; row++)
         {
-            total += bvr_mat_get(src,  row,  col);
+            total += bvr_mat_get(src, row, col);
         }
-        bvr_mat_set(out,  0,  col,  total);
+        bvr_mat_set(out, 0, col, total);
     }
     return out;
 }
 
 bvr_mat32_t *bvr_filter_create_horizontal_proj_mat(const bvr_mat8_t *src)
 {
-    bvr_mat32_t *out = bvr_mat32_new( 1,src->rows);
+    bvr_mat32_t *out = bvr_mat32_new(1, src->rows);
 
     int row, col;
     for (row = 0; row < src->rows; row++)
@@ -292,9 +292,9 @@ bvr_mat32_t *bvr_filter_create_horizontal_proj_mat(const bvr_mat8_t *src)
         uint32_t total = 0;
         for (col = 0; col < src->columns; col++)
         {
-            total += bvr_mat_get(src,  row,  col);
+            total += bvr_mat_get(src, row, col);
         }
-        bvr_mat_set(out,  0,  row,  total);
+        bvr_mat_set(out, 0, row, total);
     }
     return out;
 }

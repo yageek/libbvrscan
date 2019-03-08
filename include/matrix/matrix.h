@@ -38,7 +38,7 @@ typedef struct
  * @param rows The rows of the matrix (rows)
  * @return bvr_mat8_t* 
  */
-bvr_mat8_t *bvr_mat8_new( size_t rows,size_t columns);
+bvr_mat8_t *bvr_mat8_new(size_t rows, size_t columns);
 
 /**
  * @brief Creates an empty `uint8_t` matrix
@@ -48,7 +48,7 @@ bvr_mat8_t *bvr_mat8_new( size_t rows,size_t columns);
  * @return bvr_mat8_t* 
  */
 
-bvr_mat32_t *bvr_mat32_new( size_t rows,size_t columns);
+bvr_mat32_t *bvr_mat32_new(size_t rows, size_t columns);
 
 /**
  * @brief Creates an empty `uint32_t` matrix
@@ -58,7 +58,7 @@ bvr_mat32_t *bvr_mat32_new( size_t rows,size_t columns);
  * @return bvr_mat8_t* 
  */
 
-bvr_matf64_t *bvr_matf64_new( size_t rows,size_t columns);
+bvr_matf64_t *bvr_matf64_new(size_t rows, size_t columns);
 
 /**
  * @brief Creates an empty `uint64_t` matrix
@@ -68,7 +68,7 @@ bvr_matf64_t *bvr_matf64_new( size_t rows,size_t columns);
  * @return bvr_mat8_t* 
  */
 
-bvr_mat64_t *bvr_mat64_new( size_t rows,size_t columns);
+bvr_mat64_t *bvr_mat64_new(size_t rows, size_t columns);
 
 #define bvr_mat_free(m) \
   do                    \
@@ -77,10 +77,10 @@ bvr_mat64_t *bvr_mat64_new( size_t rows,size_t columns);
     free(m);            \
   } while (0)
 
-#define bvr_mat_get(m,  r,  c) \
+#define bvr_mat_get(m, r, c) \
   m->content[(c) + (r)*m->columns]
 
-#define bvr_mat_set(m,  r,  c,  val) \
+#define bvr_mat_set(m, r, c, val) \
   m->content[(c) + (r)*m->columns] = val
 
 void bvr_matf_mul(bvr_matf64_t *lhs, bvr_matf64_t *rhs, bvr_matf64_t *result);
