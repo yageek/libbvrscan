@@ -120,6 +120,9 @@ void bvr_mat_real_mul(const bvr_mat_real_t *lhs, const bvr_mat_real_t *rhs, bvr_
  */
 void bvr_mat_scalar_mul(const bvr_mat_real_t *mat, double scalar, bvr_mat_real_t *result);
 
+void bvr_mat_add(const bvr_mat_real_t *lhs, const bvr_mat_real_t *rhs, bvr_mat_real_t *result);
+
+void bvr_mat_transpose(const bvr_mat_real_t *lhs, bvr_mat_real_t *result);
 /**
  * @brief A pointer of function that takes a double and return a double
  * 

@@ -71,6 +71,33 @@ void bvr_mat_scalar_mul(const bvr_mat_real_t *mat, double scalar, bvr_mat_real_t
     }
 }
 
+void bvr_mat_add(const bvr_mat_real_t *lhs, const bvr_mat_real_t *rhs, bvr_mat_real_t *result)
+{
+    assert(lhs->rows == rhs->rows && lhs->columns == rhs->columns);
+    int row, col;
+    for (row = 0; row < lhs->rows; row++)
+    {
+        for (col = 0; col < lhs->columns; col++)
+        {
+            double val = bvr_mat_get(lhs, row, col) * bvr_mat_get(rhs, row, col);
+            bvr_mat_set(result, row, col, val);
+        }
+    }
+}
+void bvr_mat_transpose(const bvr_mat_real_t *lhs, bvr_mat_real_t *result)
+{
+    assert(lhs->rows == result->columns && lhs->columns && result->rows);
+    int row, col;
+    for (row = 0; row < lhs->rows; row++)
+    {
+        for (col = 0; col < lhs->columns; col++)
+        {
+            double val = bvr_mat_get(lhs, row, col);
+            bvr_mat_set(result, col, row, val);
+        }
+    }
+}
+
 void bvr_mat_apply_scalar_func(const bvr_mat_real_t *mat, mat_scalar_func f, bvr_mat_real_t *result)
 {
     int row, col;
