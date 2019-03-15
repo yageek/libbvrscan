@@ -1,5 +1,6 @@
 #include "matrix/matrix.h"
 #include <assert.h>
+#include <string.h>
 
 bvr_mat8_t *bvr_mat8_new(size_t rows, size_t columns)
 {
@@ -109,4 +110,9 @@ void bvr_mat_apply_scalar_func(const bvr_mat_real_t *mat, mat_scalar_func f, bvr
             bvr_mat_set(result, row, col, val);
         }
     }
+}
+
+void bvr_mat_real_load(bvr_mat_real_t *mat, double *array) {
+
+    memcpy(mat->content, &array[0], mat->rows*mat->columns);
 }

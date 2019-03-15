@@ -40,4 +40,16 @@ bvr_mat_real_t *bvr_filter_create_image_fintegral(const bvr_mat_real_t *src);
  * @return bvr_mat8_t* The filtered image
  */
 bvr_mat8_t *bvr_filter_sauvola(const bvr_mat8_t *src, const double k, const size_t window_size, uint8_t foregound, uint8_t background);
+
+/**
+ * @brief Resize the matrix as image
+ * 
+ * @param src The source image as a gray matrix
+ * @param width The new width
+ * @param height The new height
+ * @return bvr_mat8_t* 
+ */
+bvr_mat8_t *bvr_resize(const bvr_mat8_t *src, size_t width, size_t height);
+
+
 #endif

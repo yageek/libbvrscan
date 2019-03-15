@@ -316,8 +316,8 @@ MunitResult bvr_test_matrix_scalar_mul(const MunitParameter params[], void *user
 }
 MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_fixture)
 {
-    const char *input_image_name = "samples/small_bvr.jpg";
-
+    // Load the inage
+    const char *input_image_name = "../samples/small_bvr.jpg";
     bvr_io_image_source_t src;
     int res;
     MunitResult t_res = MUNIT_FAIL;
@@ -325,18 +325,33 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
     if (res < 0)
         goto out;
 
+    // Filter in gray
     bvr_mat8_t *gray = bvr_filter_create_grayscale(&src);
     if (gray == NULL)
         goto free_source;
 
+    // Filter Sauvola
     bvr_mat8_t *filtered = bvr_filter_sauvola(gray, 0.5, 70, 1, 0);
+
+    bvr_io_image_grayscale_write(filtered, "filtered.jpg", BVRWritingTypeJPG);
+    // Detect Blobs
     bvr_blob_t *blobs;
     size_t len;
     bvr_blobs_projections(filtered, &blobs, &len);
     munit_assert_size(len, ==, 42);
+
+    // Map blobs to
+    bvr_blob_t first = blobs[0];
+    bvr_mat8_t *blob_mat = bvr_extract_blob(filtered, &blobs[0]);
+
+    // Resize to correct size
+    bvr_mat8_t *blob_resize = bvr_resize(blob_mat, 32, 32);
+
     t_res = MUNIT_OK;
     bvr_mat_free(gray);
     bvr_mat_free(filtered);
+    bvr_mat_free(blob_mat);
+    bvr_mat_free(blob_resize);
     free(blobs);
 free_source:
     bvr_io_image_source_free(src);
@@ -370,6 +385,18 @@ MunitResult bvr_neural_book(const MunitParameter params[], void *user_data_or_fi
 
     bvr_neural_net_free(net);
     bvr_mat_free(input);
+    return MUNIT_OK;
+}
+
+MunitResult bvr_neural_load(const MunitParameter params[], void *user_data_or_fixture)
+{
+
+    bvr_neural_net_t *net = bvr_new_neural_net(1024, 100, 13);
+
+    bvr_mat_real_load(net->w_input_hidden, &bvr_neural_wih_content[0]);
+    bvr_mat_real_load(net->hidden_output, &bvr_neural_woh_content[0]);
+    bvr_neural_net_free(net);
+
     return MUNIT_OK;
 }
 
@@ -486,6 +513,15 @@ MunitTest tests[] = {
         MUNIT_TEST_OPTION_NONE, /* options */
         NULL                    /* parameters */
     },
+    {
+        "/bvr_neural_load",     /* name */
+        bvr_neural_load,        /* test */
+        NULL,                   /* setup */
+        NULL,                   /* tear_down */
+        MUNIT_TEST_OPTION_NONE, /* options */
+        NULL                    /* parameters */
+    },
+
     /* Mark the end of the array with an entry where the test
    * function is NULL */
     {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}};

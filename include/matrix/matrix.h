@@ -70,6 +70,9 @@ bvr_mat_real_t *bvr_mat_real_new(size_t rows, size_t columns);
 
 bvr_mat64_t *bvr_mat64_new(size_t rows, size_t columns);
 
+
+void bvr_mat_real_load(bvr_mat_real_t *mat, double *array);
+
 #define bvr_mat_free(m) \
   do                    \
   {                     \
@@ -91,7 +94,7 @@ bvr_mat64_t *bvr_mat64_new(size_t rows, size_t columns);
     {                                             \
       for (col = 0; col < m->columns; col++)      \
       {                                           \
-        printf("%f\t", bvr_mat_get(m, row, col)); \
+        printf("%i\t", bvr_mat_get(m, row, col)); \
       }                                           \
       printf("\n");                               \
     }                                             \

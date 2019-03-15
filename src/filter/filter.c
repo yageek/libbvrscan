@@ -191,3 +191,47 @@ bvr_mat8_t *bvr_filter_sauvola(const bvr_mat8_t *src, const double k, const size
     bvr_mat_free(s2);
     return out;
 }
+
+// See: http://www.tech-algorithm.com/articles/bilinear-image-scaling/
+bvr_mat8_t *bvr_resize(const bvr_mat8_t *src, size_t width, size_t height) {
+// public int[] resizeBilinearGray(int[] pixels, int w, int h, int w2, int h2) {
+
+    // int[] temp = new int[w2*h2] ;
+
+    int w = src->columns;
+    int h = src->rows;
+    int h2 = height;
+    int w2 = width;
+
+    bvr_mat8_t *temp = bvr_mat8_new(h2, w2);
+    int A, B, C, D, x, y, index, gray ;
+    float x_ratio = ((float)(w-1))/w2 ;
+    float y_ratio = ((float)(h-1))/h2 ;
+    float x_diff, y_diff, ya, yb ;
+    int offset = 0 ;
+    for (int i=0;i<h2;i++) {
+        for (int j=0;j<w2;j++) {
+            x = (int)(x_ratio * j) ;
+            y = (int)(y_ratio * i) ;
+            x_diff = (x_ratio * j) - x ;
+            y_diff = (y_ratio * i) - y ;
+            index = y*w+x ;
+
+            // range is 0 to 255 thus bitwise AND with 0xff
+            A = src->content[index] & 0xff ;
+            B = src->content[index+1] & 0xff ;
+            C = src->content[index+w] & 0xff ;
+            D = src->content[index+w+1] & 0xff ;
+            
+            // Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
+            gray = (int)(
+                    A*(1-x_diff)*(1-y_diff) +  B*(x_diff)*(1-y_diff) +
+                    C*(y_diff)*(1-x_diff)   +  D*(x_diff*y_diff)
+                    ) ;
+
+            temp->content[offset++] = gray ;                                   
+        }
+    }
+    return temp;
+}
+

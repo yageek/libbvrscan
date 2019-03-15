@@ -12,7 +12,8 @@ add_library(bvrscan
     src/io/io.c
     src/filter/filter.c
     src/blob/blob.c
-    src/neural/neural.c
+    src/neural/neural.c src/neural/neural_v1.c
+
 )
 
 target_include_directories(bvrscan 

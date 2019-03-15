@@ -78,10 +78,40 @@ class neuralNetwork:
         final_outputs = self.activation_function(final_inputs)
         
         return final_outputs
+    
+    # Save the network
+    def save(self, file_path):
+        numpy.savetxt(file_path+"_wih.txt", self.wih, delimiter=",", header=f'{self.wih.shape}')
+        numpy.savetxt(file_path+"_who.txt", self.who, delimiter=",", header=f'{self.who.shape}')
+    def save_as_c(self, file_name):
+        # Write header first
+        out = open(f"{file_name}.h", "w")
+        out.write("#ifndef __HEADER_NET_CONFIG\n")
+        out.write("#define __HEADER_NET_CONFIG\n\n\n")
+        out.write("#include \"matrix/matrix.h\"\n\n\n")
+        
+        out.write("extern double bvr_neural_wih_content[];\n")
+        out.write("extern double bvr_neural_woh_content[];\n")
+
+
+        out.write("#endif\n")
+        out.close() 
+
+        # Write content
+        c = open(f"{file_name}.c", "w")
+        # wih
+        wih_out = ",".join([ f"{x}" for x in self.wih.flatten().tolist()])
+        c.write(f"double bvr_neural_wih_content[] = {{ {wih_out} }};\n")
+
+        # woh
+        who_out = ",".join([ f"{x}" for x in self.who.flatten().tolist()])
+        c.write(f"double bvr_neural_woh_content[] = {{ {who_out} }};\n")
+
 
 def load_values(file_path):
     return numpy.fromfile(file_path, dtype='uint8')
     
+
 # Start loading the assets
 assets_dir = os.path.dirname(os.path.realpath(__file__)) + "/../generated"
 assets_files = {}
@@ -119,5 +149,9 @@ for e in range(epochs):
         n.train(inputs, targets)
 
 # Test
-print("Output:", input_index)
-print("Test 1", n.query(assets_files["1"]))
+#print("Output:", input_index)
+#print("Test 1", n.query(assets_files["1"]))
+
+# In our case who -> (13, 100)
+# In our case wih -> (100, 1024)
+n.save_as_c("neural_v1")

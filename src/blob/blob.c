@@ -165,42 +165,43 @@ int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replac
 typedef struct
 {
     size_t len;
-    size_t element_size;
     size_t cap;
-    void *content;
+    bvr_blob_t *content;
 
 } _bvr_array_t;
 
-_bvr_array_t _bvr_new_array(size_t element_size)
+_bvr_array_t _bvr_new_array()
 {
 
-    void *content = malloc(element_size * 12);
-    return (_bvr_array_t){0, element_size, 12, content};
+    void *content = malloc(sizeof(bvr_blob_t) * 12);
+    return (_bvr_array_t){0, 12, content};
 }
 
-void _bvr_array_free(_bvr_array_t array)
+void _bvr_array_free(_bvr_array_t *array)
 {
-    free(array.content);
+    free(array->content);
 }
 
-#define _bvr_array_get(array, i) \
-    *(&array.content[0] + ((i)*array.element_size))
+bvr_blob_t _bvr_array_get(_bvr_array_t *array, int i) {
+    return *(&array->content[0] + ((i)*sizeof(bvr_blob_t)));
+}
 
-#define _bvr_array_set(array, i, val)                         \
-    void *ptr = &array.content[0] + ((i)*array.element_size); \
-    memcpy(ptr, &i, array.element_size);
 
-#define _bvr_array_push(array, val)                                 \
-    do                                                              \
-    {                                                               \
-        if ((array.len + 1) > array.cap)                            \
-        {                                                           \
-            array.content = realloc(array.content, array.cap + 12); \
-            array.cap += 12;                                        \
-        }                                                           \
-        _bvr_array_set(array, array.len - 1, val);                  \
-        array.len++;                                                \
-    } while (0)
+void _bvr_array_set(_bvr_array_t *array, int i, bvr_blob_t val)  {
+    bvr_blob_t *ptr = &array->content[0] + ((i)*sizeof(bvr_blob_t));
+    memcpy(ptr, &val, sizeof(bvr_blob_t));
+}
+
+void _bvr_array_push(_bvr_array_t *array, bvr_blob_t val) {
+        if ((array->len + 1) > array->cap)
+        {
+            array->content = realloc(array->content, array->cap + 12*sizeof(bvr_blob_t));
+            array->cap += 12;
+        }
+        _bvr_array_set(array, array->len - 1, val);
+        array->len++;
+}
+
 
 int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *array_len)
 {
@@ -233,7 +234,7 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
         previousInPeek = currentInPeek;
     }
 
-    _bvr_array_t blobs = _bvr_new_array(sizeof(bvr_blob_t));
+    _bvr_array_t blobs = _bvr_new_array();
     previousInPeek = false;
     currentInPeek = false;
 
@@ -253,7 +254,7 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
             right = i - 1;
 
             bvr_blob_t bl = (bvr_blob_t){left, right, top, bottom};
-            _bvr_array_push(blobs, bl);
+            _bvr_array_push(&blobs, bl);
         }
         previousInPeek = currentInPeek;
     }
@@ -261,8 +262,13 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
     bvr_mat_free(vertical_proj);
     bvr_mat_free(horizontal_proj);
 
-    *array = blobs.content;
+    // Copy output
+    bvr_blob_t *out = (bvr_blob_t *)malloc(blobs.len*sizeof(bvr_blob_t));
+    memcpy(out, blobs.content, blobs.len*sizeof(bvr_blob_t));
+    *array = out;
     *array_len = blobs.len;
+    _bvr_array_free(&blobs);
+
     return 0;
 }
 
@@ -297,4 +303,27 @@ bvr_mat32_t *bvr_filter_create_horizontal_proj_mat(const bvr_mat8_t *src)
         bvr_mat_set(out, 0, row, total);
     }
     return out;
+}
+
+bvr_mat8_t *bvr_extract_blob(const bvr_mat8_t *src, const bvr_blob_t *blob)
+{
+
+    size_t width = blob->x_max - blob->x_min;
+    size_t height = blob->y_max - blob->y_min;
+
+    bvr_mat8_t *img_mat = bvr_mat8_new(height, width);
+
+    int col, row;
+    for (col = blob->x_min; col < blob->x_max + 1; col++)
+    {
+        for (row = blob->y_min; row < blob->y_max + 1; row++)
+        {
+            uint8_t val = bvr_mat_get(src, row, col);
+            int rowDest = row - blob->y_min;
+            int colDest =  col - blob->x_min;
+            bvr_mat_set(img_mat, rowDest, colDest, val);
+        }
+    }
+
+    return img_mat;
 }

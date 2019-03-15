@@ -2,7 +2,7 @@
 #define __NEURAL_H
 
 #include "matrix/matrix.h"
-
+#include "neural/neural_v1.h"
 typedef struct
 {
     bvr_mat_real_t *w_input_hidden;

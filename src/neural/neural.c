@@ -53,11 +53,6 @@ void bvr_neural_net_diffuse(bvr_neural_net_t *net, bvr_mat_real_t *input)
     bvr_mat_real_mul(net->w_input_hidden_T, net->output_errors, net->hidden_errors);
 }
 
-void bvr_mat_weight_back(double alpha, const bvr_mat_real_t *output, const bvr_mat_real_t *error)
-{
-    // Transpose
-}
-
 void bvr_net_output_error_mat(bvr_neural_net_t *net, bvr_mat_real_t *input, bvr_mat_real_t *result)
 {
     assert(input->rows && result->rows && input->columns == result->columns);
