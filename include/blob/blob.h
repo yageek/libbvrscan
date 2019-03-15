@@ -41,8 +41,7 @@ bvr_mat32_t *bvr_filter_create_horizontal_proj_mat(const bvr_mat8_t *src);
  * @return int 
  */
 int bvr_blobs_flood_fill(const bvr_mat8_t *src, uint8_t searched, uint8_t replace, bvr_blob_t **array, size_t *array_len);
-int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t *array, size_t *array_len);
-
+int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *array_len);
 
 bvr_mat8_t *bvr_extract_blob(const bvr_mat8_t *src, const bvr_blob_t *blob);
 #endif

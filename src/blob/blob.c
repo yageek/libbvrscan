@@ -191,6 +191,11 @@ void _bvr_array_set(_bvr_array_t *array, int i, bvr_blob_t val)
 {
     bvr_blob_t *ptr = &array->content[0] + ((i) * sizeof(bvr_blob_t));
     memcpy(ptr, &val, sizeof(bvr_blob_t));
+
+    bvr_blob_t g = _bvr_array_get(array, i);
+    printf("Blob GET1: %i, %i, %i, %i\n", g.x_min, g.x_max, g.y_min, g.y_max);
+    g = array->content[i];
+    printf("Blob GET2: %i, %i, %i, %i\n", g.x_min, g.x_max, g.y_min, g.y_max);
 }
 
 void _bvr_array_push(_bvr_array_t *array, bvr_blob_t val)
@@ -204,7 +209,7 @@ void _bvr_array_push(_bvr_array_t *array, bvr_blob_t val)
     array->len++;
 }
 
-int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t *array, size_t *array_len)
+int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *array_len)
 {
     bvr_mat32_t *horizontal_proj = bvr_filter_create_horizontal_proj_mat(src);
     bvr_mat32_t *vertical_proj = bvr_filter_create_vertical_proj_mat(src);
@@ -265,7 +270,7 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t *array, size_t *arra
     // Copy output
     bvr_blob_t *out = (bvr_blob_t *)malloc(blobs.len * sizeof(bvr_blob_t));
     memcpy(out, blobs.content, blobs.len * sizeof(bvr_blob_t));
-    array = out;
+    array[0] = out;
     *array_len = blobs.len;
     _bvr_array_free(&blobs);
 

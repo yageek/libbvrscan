@@ -317,7 +317,7 @@ MunitResult bvr_test_matrix_scalar_mul(const MunitParameter params[], void *user
 MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_fixture)
 {
     // Load the inage
-    const char *input_image_name = "../samples/small_bvr.jpg";
+    const char *input_image_name = "samples/small_bvr.jpg";
     bvr_io_image_source_t src;
     int res;
     MunitResult t_res = MUNIT_FAIL;
@@ -333,30 +333,30 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
     // Filter Sauvola
     bvr_mat8_t *filtered = bvr_filter_sauvola(gray, 0.5, 70, 255, 0);
 
-//    bvr_io_image_grayscale_write(filtered, "../outputs/filtered_sample1.jpg", BVRWritingTypeJPG);
+    //    bvr_io_image_grayscale_write(filtered, "../outputs/filtered_sample1.jpg", BVRWritingTypeJPG);
     // Detect Blobs
     bvr_blob_t *blobs;
     size_t len;
-    bvr_blobs_projections(filtered, blobs, &len);
+    bvr_blobs_projections(filtered, &blobs, &len);
     munit_assert_size(len, ==, 42);
 
-     int i;
-     char name[1024];
-     for (i = 0; i < len; i++)
-     {
-         bvr_blob_t bl = blobs[i];
-         printf("Blob: %i, %i, %i, %i\n", bl.x_min, bl.x_max, bl.y_min, bl.y_max);
-         // bvr_mat8_t *blob_mat = bvr_extract_blob(filtered, &blobs[i]);
-         // sprintf(name, "outputs/first_blob_%i.jpg", i);
-         // bvr_io_image_grayscale_write(blob_mat, name, BVRWritingTypeJPG);
+    int i;
+    char name[1024];
+    for (i = 0; i < len; i++)
+    {
+        bvr_blob_t bl = blobs[i];
+        printf("Blob: %i, %i, %i, %i\n", bl.x_min, bl.x_max, bl.y_min, bl.y_max);
+        // bvr_mat8_t *blob_mat = bvr_extract_blob(filtered, &blobs[i]);
+        // sprintf(name, "outputs/first_blob_%i.jpg", i);
+        // bvr_io_image_grayscale_write(blob_mat, name, BVRWritingTypeJPG);
 
-         // // Resize to correct size
-         // bvr_mat8_t *blob_resize = bvr_resize(blob_mat, 32, 32);
-         // sprintf(name, "outputs/first_blob_resized_%i.jpg", i);
-         // bvr_io_image_grayscale_write(blob_resize, name, BVRWritingTypeJPG);
-         // bvr_mat_free(blob_mat);
-         // bvr_mat_free(blob_resize);
-     }
+        // // Resize to correct size
+        // bvr_mat8_t *blob_resize = bvr_resize(blob_mat, 32, 32);
+        // sprintf(name, "outputs/first_blob_resized_%i.jpg", i);
+        // bvr_io_image_grayscale_write(blob_resize, name, BVRWritingTypeJPG);
+        // bvr_mat_free(blob_mat);
+        // bvr_mat_free(blob_resize);
+    }
 
     t_res = MUNIT_OK;
     bvr_mat_free(gray);
