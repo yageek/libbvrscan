@@ -182,20 +182,10 @@ void _bvr_array_free(_bvr_array_t *array)
     free(array->content);
 }
 
-bvr_blob_t _bvr_array_get(_bvr_array_t *array, int i)
-{
-    return *(&array->content[0] + ((i) * sizeof(bvr_blob_t)));
-}
-
 void _bvr_array_set(_bvr_array_t *array, int i, bvr_blob_t val)
 {
-    bvr_blob_t *ptr = &array->content[0] + ((i) * sizeof(bvr_blob_t));
+    bvr_blob_t *ptr = &array->content[i];
     memcpy(ptr, &val, sizeof(bvr_blob_t));
-
-    bvr_blob_t g = _bvr_array_get(array, i);
-    printf("Blob GET1: %i, %i, %i, %i\n", g.x_min, g.x_max, g.y_min, g.y_max);
-    g = array->content[i];
-    printf("Blob GET2: %i, %i, %i, %i\n", g.x_min, g.x_max, g.y_min, g.y_max);
 }
 
 void _bvr_array_push(_bvr_array_t *array, bvr_blob_t val)
@@ -205,7 +195,7 @@ void _bvr_array_push(_bvr_array_t *array, bvr_blob_t val)
         array->content = realloc(array->content, (array->cap + 12) * sizeof(bvr_blob_t));
         array->cap += 12;
     }
-    _bvr_array_set(array, array->len - 1, val);
+    _bvr_array_set(array, array->len, val);
     array->len++;
 }
 

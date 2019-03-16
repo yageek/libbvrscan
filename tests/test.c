@@ -346,16 +346,16 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
     {
         bvr_blob_t bl = blobs[i];
         printf("Blob: %i, %i, %i, %i\n", bl.x_min, bl.x_max, bl.y_min, bl.y_max);
-        // bvr_mat8_t *blob_mat = bvr_extract_blob(filtered, &blobs[i]);
-        // sprintf(name, "outputs/first_blob_%i.jpg", i);
-        // bvr_io_image_grayscale_write(blob_mat, name, BVRWritingTypeJPG);
+        bvr_mat8_t *blob_mat = bvr_extract_blob(filtered, &blobs[i]);
+        sprintf(name, "outputs/first_blob_%i.jpg", i);
+        bvr_io_image_grayscale_write(blob_mat, name, BVRWritingTypeJPG);
 
-        // // Resize to correct size
-        // bvr_mat8_t *blob_resize = bvr_resize(blob_mat, 32, 32);
-        // sprintf(name, "outputs/first_blob_resized_%i.jpg", i);
-        // bvr_io_image_grayscale_write(blob_resize, name, BVRWritingTypeJPG);
-        // bvr_mat_free(blob_mat);
-        // bvr_mat_free(blob_resize);
+        // Resize to correct size
+        bvr_mat8_t *blob_resize = bvr_resize(blob_mat, 32, 32);
+        sprintf(name, "outputs/first_blob_resized_%i.jpg", i);
+        bvr_io_image_grayscale_write(blob_resize, name, BVRWritingTypeJPG);
+        bvr_mat_free(blob_mat);
+        bvr_mat_free(blob_resize);
     }
 
     t_res = MUNIT_OK;
