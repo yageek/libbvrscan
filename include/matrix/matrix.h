@@ -70,7 +70,6 @@ bvr_mat_real_t *bvr_mat_real_new(size_t rows, size_t columns);
 
 bvr_mat64_t *bvr_mat64_new(size_t rows, size_t columns);
 
-
 void bvr_mat_real_load(bvr_mat_real_t *mat, double *array);
 
 #define bvr_mat_free(m) \
@@ -134,4 +133,5 @@ typedef double (*mat_scalar_func)(double);
 
 void bvr_mat_apply_scalar_func(const bvr_mat_real_t *mat, mat_scalar_func f, bvr_mat_real_t *result);
 
+bvr_mat_real_t *bvr_mat_real_from_mat8(const bvr_mat8_t *src);
 #endif

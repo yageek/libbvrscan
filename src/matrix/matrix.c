@@ -112,7 +112,25 @@ void bvr_mat_apply_scalar_func(const bvr_mat_real_t *mat, mat_scalar_func f, bvr
     }
 }
 
-void bvr_mat_real_load(bvr_mat_real_t *mat, double *array) {
+void bvr_mat_real_load(bvr_mat_real_t *mat, double *array)
+{
 
-    memcpy(mat->content, &array[0], mat->rows*mat->columns);
+    memcpy(mat->content, &array[0], mat->rows * mat->columns);
+}
+
+bvr_mat_real_t *bvr_mat_real_from_mat8(const bvr_mat8_t *src)
+{
+    int row, col;
+    bvr_mat_real_t *out = bvr_mat_real_new(src->rows, src->columns);
+
+    for (row = 0; row < src->rows; row++)
+    {
+        for (col = 0; col < src->columns; col++)
+        {
+            uint8_t val = bvr_mat_get(src, row, col);
+            bvr_mat_set(out, row, col, (double)val);
+        }
+    }
+
+    return out;
 }
