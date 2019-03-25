@@ -6,6 +6,9 @@ project (bvrscan VERSION 0.8.4 DESCRIPTION "BVRScan core library" LANGUAGES C)
 option(UNIT_TEST "Build the unit test." OFF)
 option(TRAINING "Build the training set elements (macOS only to generate assets)" OFF)
 
+# Third party
+add_subdirectory(thirdParty)
+
 # Core library
 add_library(bvrscan
     src/matrix/matrix.c
@@ -13,7 +16,6 @@ add_library(bvrscan
     src/filter/filter.c
     src/blob/blob.c
     src/neural/neural.c src/neural/neural_v1.c
-
 )
 
 target_include_directories(bvrscan 
@@ -28,7 +30,7 @@ find_library(CORE_FOUNDATION CoreFoundation)
 find_library(CORE_SERVICES CoreServices)
 
 set(MACOS_EXTRA_LIBS ${CORE_GRAPHICS} ${IMAGE_IO} ${CORE_FOUNDATION} ${CORE_SERVICES})
-target_link_libraries(bvrscan ${MACOS_EXTRA_LIBS})
+target_link_libraries(bvrscan ${MACOS_EXTRA_LIBS} genann)
 
 if(UNIT_TEST)
         # Testing Core

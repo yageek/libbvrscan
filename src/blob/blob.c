@@ -211,7 +211,7 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
     {
 
         uint32_t total = bvr_mat_get(horizontal_proj, 0, i);
-        currentInPeek = total >= 1;
+        currentInPeek = total >= 3;
 
         if (currentInPeek && !previousInPeek)
         {
@@ -237,7 +237,7 @@ int bvr_blobs_projections(const bvr_mat8_t *src, bvr_blob_t **array, size_t *arr
     for (i = 0; i < vertical_proj->columns; i++)
     {
         uint32_t total = bvr_mat_get(vertical_proj, 0, i);
-        currentInPeek = (total >= 1);
+        currentInPeek = (total >= 3);
 
         // Starts character
         if (currentInPeek && !previousInPeek)
