@@ -332,7 +332,7 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
         goto free_source;
 
     // Filter Sauvola
-    bvr_mat8_t *filtered = bvr_filter_sauvola(gray, 0.5, 70, 255, 0);
+    bvr_mat8_t *filtered = bvr_filter_sauvola(gray, 0.5, 70, 1, 0);
 
     // Detect Blobs
     bvr_blob_t *blobs;
@@ -340,11 +340,8 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
     bvr_blobs_projections(filtered, &blobs, &len);
     munit_assert_size(len, ==, 42);
 
-    // // Initialize the neural net
-    // genann *ann = genann_init(1024, 1, 100, 13);
-    // bvr_neural_net_t *net = bvr_new_neural_net(1024, 100, 13);
-    // bvr_mat_real_load(net->w_input_hidden, &bvr_neural_wih_content[0]);
-    // bvr_mat_real_load(net->hidden_output, &bvr_neural_woh_content[0]);
+    // Initialize network
+    bvr_neural_net_t *net = bvr_load_neural_net("samples/neural1.genann");
 
     int i;
     char pathname[30];
@@ -364,12 +361,7 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
         reshaped.rows = in->columns * in->rows;
         reshaped.content = in->content;
 
-        // // // Feed into the neuron net
-        // // bvr_neural_net_diffuse(net, &reshaped);
-
-        // bvr_mat_free(blob_mat);
-        // bvr_mat_free(blob_resize);
-        // bvr_mat_free(in);
+        bvr_neural_net_detect_blob(net, &reshaped);
     }
 
     t_res = MUNIT_OK;
@@ -382,47 +374,6 @@ free_source:
     bvr_io_image_source_free(src);
 out:
     return res;
-}
-
-MunitResult bvr_neural_book(const MunitParameter params[], void *user_data_or_fixture)
-{
-
-    // Inputs
-    bvr_mat_real_t *input = bvr_mat_real_new(3, 1);
-    const double input_values[] = {0.9, 0.1, 0.8};
-    memcpy(input->content, &input_values[0], 3 * 8);
-
-    bvr_mat_real_t *w_input_hidden = bvr_mat_real_new(3, 3);
-    const double w[] = {0.9, 0.3, 0.4, 0.2, 0.8, 0.2, 0.1, 0.5, 0.6};
-    memcpy(w_input_hidden->content, &w[0], 9 * 8);
-    // bvr_mat_print(w_input_hidden);
-
-    bvr_mat_real_t *result = bvr_mat_real_new(3, 1);
-    bvr_mat_real_mul(w_input_hidden, input, result);
-
-    bvr_mat_free(w_input_hidden);
-
-    // bvr_mat_print(result);
-
-    // Diffuse attempt
-    bvr_neural_net_t *net = bvr_new_neural_net(3, 3, 3);
-    bvr_neural_net_diffuse(net, input);
-
-    bvr_neural_net_free(net);
-    bvr_mat_free(input);
-    return MUNIT_OK;
-}
-
-MunitResult bvr_neural_load(const MunitParameter params[], void *user_data_or_fixture)
-{
-
-    bvr_neural_net_t *net = bvr_new_neural_net(1024, 100, 13);
-
-    bvr_mat_real_load(net->w_input_hidden, &bvr_neural_wih_content[0]);
-    bvr_mat_real_load(net->hidden_output, &bvr_neural_woh_content[0]);
-    bvr_neural_net_free(net);
-
-    return MUNIT_OK;
 }
 
 MunitTest tests[] = {
@@ -529,22 +480,6 @@ MunitTest tests[] = {
         NULL,                          /* tear_down */
         MUNIT_TEST_OPTION_NONE,        /* options */
         NULL                           /* parameters */
-    },
-    {
-        "/bvr_neural_book",     /* name */
-        bvr_neural_book,        /* test */
-        NULL,                   /* setup */
-        NULL,                   /* tear_down */
-        MUNIT_TEST_OPTION_NONE, /* options */
-        NULL                    /* parameters */
-    },
-    {
-        "/bvr_neural_load",     /* name */
-        bvr_neural_load,        /* test */
-        NULL,                   /* setup */
-        NULL,                   /* tear_down */
-        MUNIT_TEST_OPTION_NONE, /* options */
-        NULL                    /* parameters */
     },
 
     /* Mark the end of the array with an entry where the test
