@@ -36,7 +36,7 @@ int main(int argc, const char * argv[]) {
 
         NSDictionary<NSAttributedStringKey, id>* attrs = @{
                                                      NSForegroundColorAttributeName: [NSColor blackColor],
-                                                     NSFontAttributeName: [NSFont fontWithName:@"OCRB" size:40.0]
+                                                     NSFontAttributeName: [NSFont fontWithName:@"OCRB" size:30.0]
                                                      };
 
         for(NSUInteger i = 0; i < chars.length; i++) {
@@ -48,51 +48,51 @@ int main(int argc, const char * argv[]) {
             CTLineRef line = CTLineCreateWithAttributedString((CFAttributedStringRef)attrString);
 
 
-//            NSImage *image = [NSImage imageWithSize:NSMakeSize(32.0, 32.0) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-//
-//                [s drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) withAttributes:attrs];
-//
-//                return YES;
-//            }];
+           NSImage *image = [NSImage imageWithSize:NSMakeSize(32.0, 32.0) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
 
-//            NSBitmapImageRep *bitmap = [NSBitmapImageRep imageRepWithData:image.TIFFRepresentation];
-//            NSData *data = [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
-//
-//
-//            NSString *outputName = [[output stringByAppendingPathComponent: s] stringByAppendingString:@".png"];
-//            [data writeToFile:outputName atomically:YES];
+               [s drawInRect:NSMakeRect(0.0, 0.0, 32.0, 32.0) withAttributes:attrs];
 
-            CGSize size = CGSizeMake(32.0, 32.0);
-            size_t bytesPerPixel = 1;
-            size_t bytesPerRow = size.width*bytesPerPixel;
-            uint8 *src = calloc(size.width*bytesPerPixel*size.height, 1);
+               return YES;
+           }];
+
+           NSBitmapImageRep *bitmap = [NSBitmapImageRep imageRepWithData:image.TIFFRepresentation];
+           NSData *data = [bitmap representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
 
 
-            CGColorSpaceRef inputColorSpace = CGColorSpaceCreateWithName(kCGColorSpaceLinearGray);
-            CGContextRef ctx = CGBitmapContextCreate(&src[0], size.width, size.height, 8, bytesPerRow, inputColorSpace, 0);
-            CGContextSetFillColorWithColor(ctx, [NSColor whiteColor].CGColor);
-            CGContextFillRect(ctx, CGRectMake(0, 0, size.width, size.height));
-            CTLineDraw(line, ctx);
+           NSString *outputName = [[output stringByAppendingPathComponent: s] stringByAppendingString:@".png"];
+           [data writeToFile:outputName atomically:YES];
 
-                        for (unsigned int i = 0; i < size.width; i++) {
-                            for (unsigned int j = 0; j < size.height; j++) {
-                                int index = i + j*size.width;
-                                if(src[index] == 0xFF) {
-                                    src[index] = 0;
-                                } else {
-                                    src[index] = 1;
-                                }
-                            }
-                        }
-
-            NSData * data = [NSData dataWithBytes:src length:size.width*bytesPerPixel*size.height];
-
-            NSString *outputName = [[output stringByAppendingPathComponent: s] stringByAppendingString:@".ocrb"];
-            [data writeToFile:outputName atomically:YES];
+            // CGSize size = CGSizeMake(32.0, 32.0);
+            // size_t bytesPerPixel = 1;
+            // size_t bytesPerRow = size.width*bytesPerPixel;
+            // uint8 *src = calloc(size.width*bytesPerPixel*size.height, 1);
 
 
-            CGContextRelease(ctx);
-            CGColorSpaceRelease(inputColorSpace);
+            // CGColorSpaceRef inputColorSpace = CGColorSpaceCreateWithName(kCGColorSpaceLinearGray);
+            // CGContextRef ctx = CGBitmapContextCreate(&src[0], size.width, size.height, 8, bytesPerRow, inputColorSpace, 0);
+            // CGContextSetFillColorWithColor(ctx, [NSColor whiteColor].CGColor);
+            // CGContextFillRect(ctx, CGRectMake(0, 0, size.width, size.height));
+            // CTLineDraw(line, ctx);
+
+                        // for (unsigned int i = 0; i < size.width; i++) {
+                        //     for (unsigned int j = 0; j < size.height; j++) {
+                        //         int index = i + j*size.width;
+                        //         if(src[index] == 0xFF) {
+                        //             src[index] = 0;
+                        //         } else {
+                        //             src[index] = 1;
+                        //         }
+                        //     }
+                        // }
+
+            // NSData * data = [NSData dataWithBytes:src length:size.width*bytesPerPixel*size.height];
+
+            // NSString *outputName = [[output stringByAppendingPathComponent: s] stringByAppendingString:@".ocrb"];
+            // [data writeToFile:outputName atomically:YES];
+
+
+            // CGContextRelease(ctx);
+            // CGColorSpaceRelease(inputColorSpace);
         }
     }
     return 0;
