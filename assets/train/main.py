@@ -4,6 +4,7 @@ import os
 from os import listdir
 from os.path import isfile, join
 import struct
+import imageio
 
 # neural network class definition
 class neuralNetwork:
@@ -139,7 +140,7 @@ n = neuralNetwork(input_nodes,hidden_nodes,output_nodes,
 learning_rate)
 
 # Train some amount
-epochs = 50
+epochs = 100
 for e in range(epochs):    
     for key in assets_files.keys():
         # Prepare the value
@@ -148,10 +149,15 @@ for e in range(epochs):
         targets[input_index[key]] = 1
         n.train(inputs, targets)
 
+img_array = imageio.imread("0_sized.png", as_gray=True)
+img_data = img_array.reshape(1024)
+res = n.query(img_data)
+print("Test 1", res)
+
 # Test
 #print("Output:", input_index)
 #print("Test 1", n.query(assets_files["1"]))
 
 # In our case who -> (13, 100)
 # In our case wih -> (100, 1024)
-n.save_as_c("neural_v1")
+# n.save_as_c("neural_v1")
