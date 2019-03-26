@@ -26,7 +26,7 @@ MunitResult filter_convert_gray(const MunitParameter params[], void *user_data_o
     bvr_io_image_source_t src;
     int res;
     MunitResult t_res = MUNIT_FAIL;
-    res = bvr_io_load_image(input_image_name, &src);
+    res = bvr_io_load_image_rgb(input_image_name, &src);
     if (res < 0)
         goto out;
 
@@ -113,7 +113,7 @@ MunitResult io_load_jpg(const MunitParameter params[], void *user_data_or_fixtur
     const char *input_image_name = "samples/white.jpg";
 
     bvr_io_image_source_t src;
-    int result = bvr_io_load_image(input_image_name, &src);
+    int result = bvr_io_load_image_rgb(input_image_name, &src);
     if (result < 0)
         return MUNIT_FAIL;
 
@@ -240,7 +240,7 @@ MunitResult bvr_test_sauvola(const MunitParameter params[], void *user_data_or_f
     bvr_io_image_source_t src;
     int res;
     MunitResult t_res = MUNIT_FAIL;
-    res = bvr_io_load_image(input_image_name, &src);
+    res = bvr_io_load_image_rgb(input_image_name, &src);
     if (res < 0)
         goto out;
 
@@ -322,7 +322,7 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
     bvr_io_image_source_t src;
     int res;
     MunitResult t_res = MUNIT_FAIL;
-    res = bvr_io_load_image(input_image_name, &src);
+    res = bvr_io_load_image_rgb(input_image_name, &src);
     if (res < 0)
         goto out;
 
@@ -332,7 +332,7 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
         goto free_source;
 
     // Filter Sauvola
-    bvr_mat8_t *filtered = bvr_filter_sauvola(gray, 0.5, 70, 1, 0);
+    bvr_mat8_t *filtered = bvr_filter_sauvola(gray, 0.5, 70, 255, 0);
 
     // Detect Blobs
     bvr_blob_t *blobs;
@@ -340,8 +340,8 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
     bvr_blobs_projections(filtered, &blobs, &len);
     munit_assert_size(len, ==, 42);
 
-    // Initialize network
-    bvr_neural_net_t *net = bvr_load_neural_net("samples/neural1.genann");
+    // // Initialize network
+    bvr_neural_net_t *net = bvr_neural_net_load("samples/neural1.genann");
 
     int i;
     char pathname[30];
@@ -349,11 +349,13 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
     {
         // Extract blob
         bvr_mat8_t *blob_mat = bvr_extract_blob(filtered, &blobs[i]);
-
         sprintf(pathname, "outputs/%i.png", i);
         bvr_io_image_grayscale_write(blob_mat, pathname, BVRWritingTypePNG);
+
         // Resize to correct size
         bvr_mat8_t *blob_resize = bvr_resize(blob_mat, 32, 32);
+        sprintf(pathname, "outputs/%i_sized.png", i);
+        bvr_io_image_grayscale_write(blob_resize, pathname, BVRWritingTypePNG);
 
         bvr_mat_real_t *in = bvr_mat_real_from_mat8(blob_resize);
         bvr_mat_real_t reshaped;
@@ -361,15 +363,15 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
         reshaped.rows = in->columns * in->rows;
         reshaped.content = in->content;
 
-        bvr_neural_net_detect_blob(net, &reshaped);
+        const char ch = bvr_neural_net_detect_blob(net, &reshaped);
+        printf("Char %i: %c\n", i, ch);
     }
 
     t_res = MUNIT_OK;
     bvr_mat_free(gray);
     bvr_mat_free(filtered);
     free(blobs);
-    // genann_free(ann);
-    // bvr_neural_net_free(net);
+    bvr_neural_net_free(net);
 free_source:
     bvr_io_image_source_free(src);
 out:

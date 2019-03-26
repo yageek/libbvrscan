@@ -4,7 +4,7 @@
 #include <ImageIO/ImageIO.h>
 #include <CoreServices/CoreServices.h>
 
-int bvr_io_load_image(const char *path_name, bvr_io_image_source_t *dst)
+int bvr_io_load_image_generic(const char *path_name, bvr_io_image_source_t *dst, CGColorSpaceModel colorModel, int imageBitsPerPixel, int imageBitsPerComponent)
 {
     CFStringRef path = CFStringCreateWithCString(NULL, path_name, kCFStringEncodingASCII);
     CFURLRef url = CFURLCreateWithFileSystemPath(NULL, path, kCFURLPOSIXPathStyle, 0);
@@ -38,17 +38,18 @@ int bvr_io_load_image(const char *path_name, bvr_io_image_source_t *dst)
     }
 
     CGColorSpaceModel model = CGColorSpaceGetModel(colorSpace);
-    if (model != kCGColorSpaceModelRGB)
+    if (model != colorModel)
     {
         return -1;
     }
     size_t bitsPerPixel = CGImageGetBitsPerPixel(img);
     size_t bitsPerComponent = CGImageGetBitsPerComponent(img);
 
-    if (bitsPerPixel != 32 && bitsPerComponent != 8)
+    if (bitsPerPixel != imageBitsPerPixel && bitsPerComponent != imageBitsPerComponent)
     {
         return -1;
     }
+
     // Loading the different informations from the image
     dst->pixel_width = CGImageGetWidth(img);
     dst->pixel_height = CGImageGetHeight(img);
@@ -67,6 +68,15 @@ int bvr_io_load_image(const char *path_name, bvr_io_image_source_t *dst)
     return 0;
 }
 
+int bvr_io_load_image_rgb(const char *path_name, bvr_io_image_source_t *dst)
+{
+    return bvr_io_load_image_generic(path_name, dst, kCGColorSpaceModelRGB, 32, 8);
+}
+
+int bvr_io_load_image_grayscale(const char *path_name, bvr_io_image_source_t *dst)
+{
+    return bvr_io_load_image_generic(path_name, dst, kCGColorSpaceModelMonochrome, 8, 8);
+}
 void bvr_io_image_source_free(bvr_io_image_source_t dst)
 {
     free(dst.data);

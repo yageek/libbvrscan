@@ -19,7 +19,9 @@ typedef struct
  * @param dst The pointer destination to update
  * @return int 
  */
-int bvr_io_load_image(const char *path_name, bvr_io_image_source_t *dst);
+int bvr_io_load_image_rgb(const char *path_name, bvr_io_image_source_t *dst);
+
+int bvr_io_load_image_grayscale(const char *path_name, bvr_io_image_source_t *dst);
 
 /**
  * @brief Release memory of an image source
