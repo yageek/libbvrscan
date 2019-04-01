@@ -2,9 +2,12 @@ cmake_minimum_required(VERSION 3.1)
 project (bvrscan VERSION 0.8.4 DESCRIPTION "BVRScan core library" LANGUAGES C)
 
 # Option to build external elements
-
 option(UNIT_TEST "Build the unit test." OFF)
 option(TRAINING "Build the training set elements (macOS only to generate assets)" OFF)
+
+# CMake module path
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+find_package(Cairo REQUIRED)
 
 # Third party
 add_subdirectory(thirdParty)
@@ -23,14 +26,8 @@ PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include_private>
 )
 
-# OSX framework
-find_library(CORE_GRAPHICS CoreGraphics)
-find_library(IMAGE_IO ImageIO)
-find_library(CORE_FOUNDATION CoreFoundation)
-find_library(CORE_SERVICES CoreServices)
-
-set(MACOS_EXTRA_LIBS ${CORE_GRAPHICS} ${IMAGE_IO} ${CORE_FOUNDATION} ${CORE_SERVICES})
-target_link_libraries(bvrscan ${MACOS_EXTRA_LIBS} genann)
+target_link_libraries(bvrscan ${CAIRO_LIBRARY} genann)
+target_include_directories(bvrscan PRIVATE ${CAIRO_INCLUDE_DIR} genann)
 
 if(UNIT_TEST)
         # Testing Core
