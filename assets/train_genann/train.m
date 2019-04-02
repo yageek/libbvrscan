@@ -1,6 +1,7 @@
 
 #include "genann.h"
 #include <bvrcore.h>
+#include <io.h>
 #include <Foundation/Foundation.h>
 
 #define INPUTS 1024
@@ -82,7 +83,7 @@ int main(int argc, char **argv)
         /// Test
         // 0 Char
         bvr_io_image_source_t src;
-        int res = bvr_io_load_image_grayscale("neural_tests_imgs/0_sized.png", &src);
+        int res = bvr_io_load_png("neural_tests_imgs/0_sized.png", &src);
         if(res < 0) {
             printf("Error during loading test image\n");
             return -1;

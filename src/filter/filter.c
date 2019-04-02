@@ -5,29 +5,29 @@
 #include <stdio.h>
 
 // Code used from
-bvr_mat8_t *bvr_filter_create_grayscale(const bvr_io_image_source_t *src)
+bvr_mat8_t *bvr_filter_create_grayscale(const bvr_mat8_t *src)
 {
-    size_t y, x, pixel_stride = 4;
+    size_t pixel_stride = 4;
+    size_t pixel_width = src->columns / pixel_stride;
+    size_t pixel_height = src->rows;
+    size_t pixel_length = pixel_width * pixel_height;
+
     bvr_mat8_t *mat = (bvr_mat8_t *)malloc(sizeof(bvr_mat8_t));
-    mat->rows = src->pixel_height;
-    mat->columns = src->pixel_width;
-    mat->content = (uint8_t *)calloc(src->data_len, sizeof(uint8_t));
+    mat->rows = pixel_height;
+    mat->columns = pixel_width;
+    mat->content = (uint8_t *)calloc(pixel_length, sizeof(uint8_t));
 
-    size_t bytes_in_row = src->pixel_width * pixel_stride;
-
-    for (y = 0; y < src->pixel_height; y++)
+    size_t px;
+    for (px = 0; px < pixel_length; px++)
     {
-        for (x = 0; x < src->pixel_width; x++)
-        {
-            const uint8_t *pixel = src->data + x * pixel_stride + y * bytes_in_row;
-            float r = pixel[0] / 255.0;
-            float g = pixel[1] / 255.0;
-            float b = pixel[2] / 255.0;
+        const uint8_t *pixel = &src->content[0] + px * pixel_stride;
+        float r = pixel[0] / 255.0;
+        float g = pixel[1] / 255.0;
+        float b = pixel[2] / 255.0;
 
-            // TODO: Check the method on https://en.wikipedia.org/wiki/Grayscale
-            uint8_t val = (uint8_t)((0.299 * r + 0.587 * g + 0.114 * b) * 255.0);
-            bvr_mat_set(mat, y, x, val);
-        }
+        // TODO: Check the method on https://en.wikipedia.org/wiki/Grayscale
+        uint8_t val = (uint8_t)((0.299 * r + 0.587 * g + 0.114 * b) * 255.0);
+        mat->content[px] = val;
     }
     return mat;
 }
@@ -193,8 +193,9 @@ bvr_mat8_t *bvr_filter_sauvola(const bvr_mat8_t *src, const double k, const size
 }
 
 // See: http://www.tech-algorithm.com/articles/bilinear-image-scaling/
-bvr_mat8_t *bvr_resize(const bvr_mat8_t *src, size_t width, size_t height) {
-// public int[] resizeBilinearGray(int[] pixels, int w, int h, int w2, int h2) {
+bvr_mat8_t *bvr_resize(const bvr_mat8_t *src, size_t width, size_t height)
+{
+    // public int[] resizeBilinearGray(int[] pixels, int w, int h, int w2, int h2) {
 
     // int[] temp = new int[w2*h2] ;
 
@@ -204,34 +205,33 @@ bvr_mat8_t *bvr_resize(const bvr_mat8_t *src, size_t width, size_t height) {
     int w2 = width;
 
     bvr_mat8_t *temp = bvr_mat8_new(h2, w2);
-    int A, B, C, D, x, y, index, gray ;
-    float x_ratio = ((float)(w-1))/w2 ;
-    float y_ratio = ((float)(h-1))/h2 ;
-    float x_diff, y_diff, ya, yb ;
-    int offset = 0 ;
-    for (int i=0;i<h2;i++) {
-        for (int j=0;j<w2;j++) {
-            x = (int)(x_ratio * j) ;
-            y = (int)(y_ratio * i) ;
-            x_diff = (x_ratio * j) - x ;
-            y_diff = (y_ratio * i) - y ;
-            index = y*w+x ;
+    int A, B, C, D, x, y, index, gray;
+    float x_ratio = ((float)(w - 1)) / w2;
+    float y_ratio = ((float)(h - 1)) / h2;
+    float x_diff, y_diff, ya, yb;
+    int offset = 0;
+    for (int i = 0; i < h2; i++)
+    {
+        for (int j = 0; j < w2; j++)
+        {
+            x = (int)(x_ratio * j);
+            y = (int)(y_ratio * i);
+            x_diff = (x_ratio * j) - x;
+            y_diff = (y_ratio * i) - y;
+            index = y * w + x;
 
             // range is 0 to 255 thus bitwise AND with 0xff
-            A = src->content[index] & 0xff ;
-            B = src->content[index+1] & 0xff ;
-            C = src->content[index+w] & 0xff ;
-            D = src->content[index+w+1] & 0xff ;
-            
-            // Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
-            gray = (int)(
-                    A*(1-x_diff)*(1-y_diff) +  B*(x_diff)*(1-y_diff) +
-                    C*(y_diff)*(1-x_diff)   +  D*(x_diff*y_diff)
-                    ) ;
+            A = src->content[index] & 0xff;
+            B = src->content[index + 1] & 0xff;
+            C = src->content[index + w] & 0xff;
+            D = src->content[index + w + 1] & 0xff;
 
-            temp->content[offset++] = gray ;                                   
+            // Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
+            gray = (int)(A * (1 - x_diff) * (1 - y_diff) + B * (x_diff) * (1 - y_diff) +
+                         C * (y_diff) * (1 - x_diff) + D * (x_diff * y_diff));
+
+            temp->content[offset++] = gray;
         }
     }
     return temp;
 }
-

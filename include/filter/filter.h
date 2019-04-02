@@ -1,7 +1,6 @@
 #ifndef __BVRCORE_FILTER_H
 #define __BVRCORE_FILTER_H
 
-#include "io/io.h"
 #include "matrix/matrix.h"
 /**
  * @brief Compute a grayscale matrix from an image
@@ -10,7 +9,7 @@
  * @param src The source image
  * @return bvr_mat8_t* The corresponding matrix containing the grayscale values
  */
-bvr_mat8_t *bvr_filter_create_grayscale(const bvr_io_image_source_t *src);
+bvr_mat8_t *bvr_filter_create_grayscale(const bvr_mat8_t *src);
 
 /**
  * @brief Create an image integer with integer values
@@ -50,6 +49,5 @@ bvr_mat8_t *bvr_filter_sauvola(const bvr_mat8_t *src, const double k, const size
  * @return bvr_mat8_t* 
  */
 bvr_mat8_t *bvr_resize(const bvr_mat8_t *src, size_t width, size_t height);
-
 
 #endif

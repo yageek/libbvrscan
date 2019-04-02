@@ -15,7 +15,6 @@ add_subdirectory(thirdParty)
 # Core library
 add_library(bvrscan
     src/matrix/matrix.c
-    src/io/io.c
     src/filter/filter.c
     src/blob/blob.c
     src/neural/neural.c
@@ -28,6 +27,17 @@ PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include_private>
 
 target_link_libraries(bvrscan ${CAIRO_LIBRARY} genann)
 target_include_directories(bvrscan PRIVATE ${CAIRO_INCLUDE_DIR} genann)
+
+# Image IO library for training and computer test
+add_library(bvrscanio
+        imageio/src/io.c        
+)
+
+target_include_directories(bvrscanio 
+PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/imageio/include>
+PRIVATE ${CAIRO_INCLUDE_DIR}
+)
+target_link_libraries(bvrscanio bvrscan ${CAIRO_INCLUDE_DIR})
 
 if(UNIT_TEST)
         # Testing Core
@@ -51,7 +61,7 @@ if(UNIT_TEST)
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include_private>
         )
-        target_link_libraries(test_core bvrscan)
+        target_link_libraries(test_core bvrscan bvrscanio)
         add_test(test_core test_core)
 
 endif(UNIT_TEST)

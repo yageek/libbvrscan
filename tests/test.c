@@ -1,5 +1,5 @@
 #include "munit.h"
-
+#include <io.h>
 #include <bvrcore.h>
 #include <bvrcore_private.h>
 
@@ -21,20 +21,23 @@ MunitResult matrix_init_free(const MunitParameter params[], void *user_data_or_f
 
 MunitResult filter_convert_gray(const MunitParameter params[], void *user_data_or_fixture)
 {
-    const char *input_image_name = "samples/small_bvr.jpg";
+    const char *input_image_name = "samples/small_bvr.png";
 
-    bvr_io_image_source_t src;
-    int res;
+    bvr_io_image_source_t *src = NULL;
     MunitResult t_res = MUNIT_FAIL;
-    res = bvr_io_load_image_rgb(input_image_name, &src);
-    if (res < 0)
+    src = bvr_io_load_png(input_image_name);
+    if (src == NULL)
         goto out;
 
-    bvr_mat8_t *gray = bvr_filter_create_grayscale(&src);
+    bvr_mat8_t *real = bvr_io_rgb_src(src);
+    if (real == NULL)
+        goto free_source;
+
+    bvr_mat8_t *gray = bvr_filter_create_grayscale(real);
     if (gray == NULL)
         goto free_source;
 
-    res = bvr_io_image_grayscale_write(gray, "outputs/small_bvr_gray.jpg", BVRWritingTypeJPG);
+    int res = bvr_io_image_grayscale_write(gray, "outputs/small_bvr_gray.png");
     if (res < 0)
         goto free_image;
 
@@ -43,10 +46,11 @@ MunitResult filter_convert_gray(const MunitParameter params[], void *user_data_o
     goto out;
 free_image:
     bvr_mat_free(gray);
+    bvr_mat_free(real);
 free_source:
     bvr_io_image_source_free(src);
 out:
-    return res;
+    return t_res;
 }
 
 MunitResult filter_image_integral(const MunitParameter params[], void *user_data_or_fixture)
@@ -106,31 +110,6 @@ MunitResult filter_image_integral_3(const MunitParameter params[], void *user_da
     bvr_mat_free(computed);
 out:
     return t_res;
-}
-
-MunitResult io_load_jpg(const MunitParameter params[], void *user_data_or_fixture)
-{
-    const char *input_image_name = "samples/white.jpg";
-
-    bvr_io_image_source_t src;
-    int result = bvr_io_load_image_rgb(input_image_name, &src);
-    if (result < 0)
-        return MUNIT_FAIL;
-
-    munit_assert_size(40, ==, src.pixel_width);
-    munit_assert_size(40, ==, src.pixel_height);
-    size_t bytesPerRow = 40UL * 4UL;
-    munit_assert_size(bytesPerRow * src.pixel_height, ==, src.data_len);
-
-    size_t i;
-    for (i = 0; i < src.data_len; i++)
-    {
-        // All the pixels of the test image are white
-        munit_assert_uint8(src.data[i], ==, 0xFF);
-    }
-
-    bvr_io_image_source_free(src);
-    return MUNIT_OK;
 }
 
 MunitResult blob_test_flood_fill(const MunitParameter params[], void *user_data_or_fixture)
@@ -235,21 +214,25 @@ MunitResult blob_test_queue(const MunitParameter params[], void *user_data_or_fi
 
 MunitResult bvr_test_sauvola(const MunitParameter params[], void *user_data_or_fixture)
 {
-    const char *input_image_name = "samples/sauvola.jpg";
+    const char *input_image_name = "samples/sauvola.png";
 
-    bvr_io_image_source_t src;
+    bvr_io_image_source_t *src;
     int res;
     MunitResult t_res = MUNIT_FAIL;
-    res = bvr_io_load_image_rgb(input_image_name, &src);
-    if (res < 0)
+    src = bvr_io_load_png(input_image_name);
+    if (src == NULL)
         goto out;
 
-    bvr_mat8_t *gray = bvr_filter_create_grayscale(&src);
+    bvr_mat8_t *real = bvr_io_rgb_src(src);
+    if (real == NULL)
+        goto free_source;
+
+    bvr_mat8_t *gray = bvr_filter_create_grayscale(real);
     if (gray == NULL)
         goto free_source;
 
     bvr_mat8_t *filtered = bvr_filter_sauvola(gray, 0.5, 70, 0, 255);
-    res = bvr_io_image_grayscale_write(filtered, "outputs/sauvola_applied.jpg", BVRWritingTypeJPG);
+    res = bvr_io_image_grayscale_write(filtered, "outputs/sauvola_applied.png");
     if (res < 0)
         goto free_image;
 
@@ -257,11 +240,12 @@ MunitResult bvr_test_sauvola(const MunitParameter params[], void *user_data_or_f
 
 free_image:
     bvr_mat_free(gray);
+    bvr_mat_free(real);
     bvr_mat_free(filtered);
 free_source:
     bvr_io_image_source_free(src);
 out:
-    return res;
+    return t_res;
 }
 
 MunitResult bvr_mat_real_mul_test(const MunitParameter params[], void *user_data_or_fixture)
@@ -319,15 +303,19 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
 {
     // Load the inage
     const char *input_image_name = "samples/small_bvr.jpg";
-    bvr_io_image_source_t src;
-    int res;
+    bvr_io_image_source_t *src;
     MunitResult t_res = MUNIT_FAIL;
-    res = bvr_io_load_image_rgb(input_image_name, &src);
-    if (res < 0)
+    src = bvr_io_load_png(input_image_name);
+    if (src == NULL)
+    {
         goto out;
+    }
+    bvr_mat8_t *real = bvr_io_rgb_src(src);
+    if (real == NULL)
+        goto free_source;
 
     // Filter in gray
-    bvr_mat8_t *gray = bvr_filter_create_grayscale(&src);
+    bvr_mat8_t *gray = bvr_filter_create_grayscale(real);
     if (gray == NULL)
         goto free_source;
 
@@ -350,12 +338,12 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
         // Extract blob
         bvr_mat8_t *blob_mat = bvr_extract_blob(filtered, &blobs[i]);
         sprintf(pathname, "outputs/%i.png", i);
-        bvr_io_image_grayscale_write(blob_mat, pathname, BVRWritingTypePNG);
+        bvr_io_image_grayscale_write(blob_mat, pathname);
 
         // Resize to correct size
         bvr_mat8_t *blob_resize = bvr_resize(blob_mat, 32, 32);
         sprintf(pathname, "outputs/%i_sized.png", i);
-        bvr_io_image_grayscale_write(blob_resize, pathname, BVRWritingTypePNG);
+        bvr_io_image_grayscale_write(blob_resize, pathname);
 
         bvr_mat_real_t *in = bvr_mat_real_from_mat8(blob_resize);
         bvr_mat_real_t reshaped;
@@ -370,23 +358,16 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
     t_res = MUNIT_OK;
     bvr_mat_free(gray);
     bvr_mat_free(filtered);
+    bvr_mat_free(real);
     free(blobs);
     bvr_neural_net_free(net);
 free_source:
     bvr_io_image_source_free(src);
 out:
-    return res;
+    return MUNIT_OK;
 }
 
 MunitTest tests[] = {
-    {
-        "/io_load_jpg",         /* name */
-        io_load_jpg,            /* test */
-        NULL,                   /* setup */
-        NULL,                   /* tear_down */
-        MUNIT_TEST_OPTION_NONE, /* options */
-        NULL                    /* parameters */
-    },
     {
         "/matrix",              /* name */
         matrix_init_free,       /* test */
