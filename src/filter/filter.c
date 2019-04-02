@@ -5,9 +5,8 @@
 #include <stdio.h>
 
 // Code used from
-bvr_mat8_t *bvr_filter_create_grayscale(const bvr_mat8_t *src)
+bvr_mat8_t *bvr_filter_create_grayscale(const bvr_mat8_t *src, const size_t pixel_stride)
 {
-    size_t pixel_stride = 4;
     size_t pixel_width = src->columns / pixel_stride;
     size_t pixel_height = src->rows;
     size_t pixel_length = pixel_width * pixel_height;

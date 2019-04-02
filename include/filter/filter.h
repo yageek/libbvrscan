@@ -7,9 +7,10 @@
  * 
  * The algorithm used is the one presented here: https://en.wikipedia.org/wiki/Grayscale
  * @param src The source image
+ * * @param src The pixel stride (number of bytes to code the pixel)
  * @return bvr_mat8_t* The corresponding matrix containing the grayscale values
  */
-bvr_mat8_t *bvr_filter_create_grayscale(const bvr_mat8_t *src);
+bvr_mat8_t *bvr_filter_create_grayscale(const bvr_mat8_t *src, const size_t pixel_stride);
 
 /**
  * @brief Create an image integer with integer values

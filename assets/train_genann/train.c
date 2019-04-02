@@ -10,9 +10,8 @@
 #define HIDDEN_LAYER_NODES_COUNT 100
 #define LEARNING_RATE 0.3
 
-
-
-void free_in_data(bvr_mat8_t **asset_data, size_t len) {
+void free_in_data(bvr_mat8_t **asset_data, size_t len)
+{
     // Free memory
     int i;
     for (i = 0; i < len; i++)
@@ -62,13 +61,14 @@ int main(int argc, char **argv)
         }
 
         bvr_mat8_t *rgb = bvr_io_rgb_src(src);
-        if(rgb == NULL) {
+        if (rgb == NULL)
+        {
             perror("can not load rgb image");
             bvr_io_image_source_free(src);
             free_in_data(asset_data, OUTPUTS);
             exit(-1);
         }
-        asset_data[i] = bvr_filter_create_grayscale(rgb);
+        asset_data[i] = bvr_filter_create_grayscale(rgb, 3);
         bvr_io_image_source_free(src);
         bvr_mat_free(rgb);
     }
@@ -76,46 +76,48 @@ int main(int argc, char **argv)
     // Load and train
     int epoch = 100;
     int e;
-    for(e = 0; e < epoch; e++) {
+    for (e = 0; e < epoch; e++)
+    {
 
         // For each characters
         int i;
-        for(i = 0; i < OUTPUTS; i++) {
+        for (i = 0; i < OUTPUTS; i++)
+        {
 
             // Load the inputs
             bvr_mat8_t *data = asset_data[i];
-            uint8_t * in_ptr = data->content;
+            uint8_t *in_ptr = data->content;
 
             int j;
-            for(j = 0; j < INPUTS; j++) {
-                double val =  ((double)in_ptr[j]);
-                
+            for (j = 0; j < INPUTS; j++)
+            {
+                double val = ((double)in_ptr[j])*0.99/255.0+0.01;
                 current_input[j] = val;
             }
 
             // Load the outputs
-            memset(current_output, 0, OUTPUTS*sizeof(double));
-            current_input[i] = 1.0;
+            int o;
+            for(o = 0; o < OUTPUTS; o++) {
+                current_output[o] = 0.1;
+            }
+            current_output[i] = 1.0;
 
             // Train the network
             genann_train(ann, current_input, current_output, LEARNING_RATE);
-
         }
     }
 
-
     // Test
     const double *answer = genann_run(ann, current_input);
-    for (i=0; i < OUTPUTS; i++){
+    for (i = 0; i < OUTPUTS; i++)
+    {
         printf("%f\t", answer[i]);
     }
     printf("\n");
 
-
     // Free memory
     free_in_data(asset_data, OUTPUTS);
     genann_free(ann);
-
 
     return 0;
 }

@@ -55,13 +55,6 @@ bvr_mat8_t *bvr_io_grayscale_src(const bvr_io_image_source_t *src)
         return NULL;
     }
 
-    int width = cairo_image_surface_get_width(src->cairo_surface);
-
-    if (width != stride)
-    {
-        return NULL;
-    }
-
     int height = cairo_image_surface_get_height(src->cairo_surface);
     uint8_t *data = cairo_image_surface_get_data(src->cairo_surface);
 
@@ -75,14 +68,7 @@ bvr_mat8_t *bvr_io_rgb_src(const bvr_io_image_source_t *src)
 {
     int format = cairo_image_surface_get_format(src->cairo_surface);
     int stride = cairo_image_surface_get_stride(src->cairo_surface);
-    if (format != CAIRO_FORMAT_ARGB32)
-    {
-        return NULL;
-    }
-
-    int width = cairo_image_surface_get_width(src->cairo_surface);
-
-    if (width * 4 != stride)
+    if (format != CAIRO_FORMAT_RGB24)
     {
         return NULL;
     }

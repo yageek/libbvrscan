@@ -97,7 +97,8 @@ int main(int argc, const char *argv[])
 
         // Background
         cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0);
-        cairo_paint(cr);
+        cairo_rectangle(cr, 0.0, 0.0, ASSET_WIDTH, ASSET_HEIGHT);
+        cairo_fill(cr);
 
         // Draw the character
         cairo_text_extents_t te;

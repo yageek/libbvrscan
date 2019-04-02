@@ -33,7 +33,7 @@ MunitResult filter_convert_gray(const MunitParameter params[], void *user_data_o
     if (real == NULL)
         goto free_source;
 
-    bvr_mat8_t *gray = bvr_filter_create_grayscale(real);
+    bvr_mat8_t *gray = bvr_filter_create_grayscale(real, 3);
     if (gray == NULL)
         goto free_source;
 
@@ -227,7 +227,7 @@ MunitResult bvr_test_sauvola(const MunitParameter params[], void *user_data_or_f
     if (real == NULL)
         goto free_source;
 
-    bvr_mat8_t *gray = bvr_filter_create_grayscale(real);
+    bvr_mat8_t *gray = bvr_filter_create_grayscale(real, 3);
     if (gray == NULL)
         goto free_source;
 
@@ -315,7 +315,7 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
         goto free_source;
 
     // Filter in gray
-    bvr_mat8_t *gray = bvr_filter_create_grayscale(real);
+    bvr_mat8_t *gray = bvr_filter_create_grayscale(real, 3);
     if (gray == NULL)
         goto free_source;
 
