@@ -2,14 +2,8 @@
 #define __BVRCORE_IMAGEIO
 
 #include "matrix/matrix.h"
-typedef struct
-{
-    uint8_t *data;
-    size_t pixel_width;
-    size_t pixel_height;
-    size_t data_len;
 
-} bvr_io_image_source_t;
+typedef struct _bvr_io_image_source_t bvr_io_image_source_t;
 
 /**
  * @brief Load the image at the provided path as sRGB
@@ -19,32 +13,22 @@ typedef struct
  * @param dst The pointer destination to update
  * @return int 
  */
-int bvr_io_load_image(const char *path_name, bvr_io_image_source_t *dst);
-
+bvr_io_image_source_t *bvr_io_load_png(const char *path_name);
+bvr_mat8_t *bvr_io_image_src(const bvr_io_image_source_t *src);
+int bvr_io_image_source_pixel_stride(const bvr_io_image_source_t *src);
 /**
  * @brief Release memory of an image source
  * 
  * @param dst The image source whose memory should be gree
  */
-void bvr_io_image_source_free(bvr_io_image_source_t dst);
+void bvr_io_image_source_free(bvr_io_image_source_t *dst);
 
 /**
- * @brief An enum representing the output 
- * writing format of an image
- */
-typedef enum
-{
-    BVRWritingTypePNG,
-    BVRWritingTypeJPG
-} BVRWritingType;
-
-/**
- * @brief Write the specified grayscale as output image
+ * @brief Write the specified grayscale as output image as PNG
  * 
  * @param src The matrix reprensenting the grayscale image
  * @param path_name The path where to save the image
- * @param type The type of image to save (PNG or JPG)
  * @return int The result of the operatiobn
  */
-int bvr_io_image_grayscale_write(const bvr_mat8_t *src, const char *path_name, const BVRWritingType type);
+int bvr_io_image_grayscale_write(const bvr_mat8_t *src, const char *path_name);
 #endif

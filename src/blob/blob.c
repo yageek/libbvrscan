@@ -60,7 +60,7 @@ void _bvr_blob_queue_clear(__bvr_blob_node_queue_t *queue)
 {
     queue->head = NULL;
     queue->tail = NULL;
-    memset(queue->content, queue->cap, 0);
+    memset(queue->content, 0, queue->cap);
 }
 
 int _bvr_blob_queue_is_empty(__bvr_blob_node_queue_t *queue)

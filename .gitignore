@@ -5,3 +5,4 @@ tests/outputs/*.jpg
 tests/outputs/*.png
 .vscode/
 *.DS_Store
+xcode_build/
