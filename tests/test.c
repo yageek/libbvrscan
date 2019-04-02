@@ -302,14 +302,13 @@ MunitResult bvr_test_matrix_scalar_mul(const MunitParameter params[], void *user
 MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_fixture)
 {
     // Load the inage
-    const char *input_image_name = "samples/small_bvr.jpg";
+    const char *input_image_name = "samples/small_bvr.png";
     bvr_io_image_source_t *src;
     MunitResult t_res = MUNIT_FAIL;
     src = bvr_io_load_png(input_image_name);
     if (src == NULL)
-    {
         goto out;
-    }
+
     bvr_mat8_t *real = bvr_io_image_src(src);
     if (real == NULL)
         goto free_source;

@@ -116,6 +116,12 @@ int main(int argc, char **argv)
     }
     printf("\n");
 
+    // Save
+    snprintf(input_name, 1024, "%s/neural1.genann", output_dir);
+    FILE *fd = fopen(input_name, "w");
+    genann_write(ann, fd);
+    fclose(fd);
+
     // Free memory
     free_in_data(asset_data, OUTPUTS);
     genann_free(ann);
