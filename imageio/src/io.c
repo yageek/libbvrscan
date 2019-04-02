@@ -12,7 +12,8 @@ bvr_io_image_source_t *bvr_io_load_png(const char *path_name)
 {
     // Read PNG
     cairo_surface_t *surface = cairo_image_surface_create_from_png(path_name);
-    if (!surface)
+    cairo_status_t stat = cairo_surface_status(surface);
+    if (stat != CAIRO_STATUS_SUCCESS)
     {
         return NULL;
     }

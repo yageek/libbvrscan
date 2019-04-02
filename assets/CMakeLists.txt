@@ -5,8 +5,10 @@ target_link_libraries(asset_gen ${CAIRO_LIBRARY})
 target_include_directories(asset_gen PUBLIC ${CAIRO_INCLUDE_DIR})
 
 # Add train executable
-add_executable(train_neural train_genann/train.m)
-target_link_libraries(train_neural genann ${Foundation} ${AppKit} bvrscan) 
+add_executable(train_neural train_genann/train.c)
+target_link_libraries(train_neural genann ${CAIRO_INCLUDE_DIR} bvrscan bvrscanio) 
+target_link_libraries(train_neural ${CAIRO_LIBRARY})
+
 add_custom_command(
             TARGET train_neural POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory
