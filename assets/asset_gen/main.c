@@ -15,9 +15,26 @@
 #include <unistd.h>
 
 #include <sys/stat.h>
+#include <ftw.h>
 
 #define ASSET_WIDTH 32
 #define ASSET_HEIGHT 32
+
+// See: https://stackoverflow.com/questions/5467725/how-to-delete-a-directory-and-its-contents-in-posix-c
+int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
+{
+    int rv = remove(fpath);
+
+    if (rv)
+        perror(fpath);
+
+    return rv;
+}
+
+int rmrf(const char *path)
+{
+    return nftw(path, unlink_cb, 64, FTW_DEPTH | FTW_PHYS);
+}
 
 int create_dir_if_non_exists(const char *output)
 {
@@ -27,7 +44,7 @@ int create_dir_if_non_exists(const char *output)
     // If directory exists
     if (err == 0 && S_ISDIR(s.st_mode))
     {
-        err = rmdir(output);
+        err = rmrf(output);
         if (err < 0)
         {
             perror("can not delete exising directory");
@@ -83,12 +100,18 @@ int main(int argc, const char *argv[])
         cairo_paint(cr);
 
         // Draw the character
+        cairo_text_extents_t te;
+
         cairo_select_font_face(cr, "OCRB",
                                CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
         cairo_set_font_size(cr, 30.0);
-
         cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
-        cairo_move_to(cr, 5.0, 27.0);
+
+        cairo_text_extents(cr, &current, &te);
+
+        double x = (ASSET_WIDTH - te.width) / 2.0 - te.x_bearing;
+        double y = (ASSET_HEIGHT - te.height) / 2.0 - te.y_bearing;
+        cairo_move_to(cr, x, y);
         cairo_show_text(cr, &current);
 
         // Save file to png
