@@ -29,11 +29,11 @@ MunitResult filter_convert_gray(const MunitParameter params[], void *user_data_o
     if (src == NULL)
         goto out;
 
-    bvr_mat8_t *real = bvr_io_rgb_src(src);
+    bvr_mat8_t *real = bvr_io_image_src(src);
     if (real == NULL)
         goto free_source;
 
-    bvr_mat8_t *gray = bvr_filter_create_grayscale(real, 3);
+    bvr_mat8_t *gray = bvr_filter_create_grayscale(real, bvr_io_image_source_pixel_stride(src));
     if (gray == NULL)
         goto free_source;
 
@@ -223,11 +223,11 @@ MunitResult bvr_test_sauvola(const MunitParameter params[], void *user_data_or_f
     if (src == NULL)
         goto out;
 
-    bvr_mat8_t *real = bvr_io_rgb_src(src);
+    bvr_mat8_t *real = bvr_io_image_src(src);
     if (real == NULL)
         goto free_source;
 
-    bvr_mat8_t *gray = bvr_filter_create_grayscale(real, 3);
+    bvr_mat8_t *gray = bvr_filter_create_grayscale(real, bvr_io_image_source_pixel_stride(src));
     if (gray == NULL)
         goto free_source;
 
@@ -310,12 +310,12 @@ MunitResult bvr_test_simple1(const MunitParameter params[], void *user_data_or_f
     {
         goto out;
     }
-    bvr_mat8_t *real = bvr_io_rgb_src(src);
+    bvr_mat8_t *real = bvr_io_image_src(src);
     if (real == NULL)
         goto free_source;
 
     // Filter in gray
-    bvr_mat8_t *gray = bvr_filter_create_grayscale(real, 3);
+    bvr_mat8_t *gray = bvr_filter_create_grayscale(real, bvr_io_image_source_pixel_stride(src));
     if (gray == NULL)
         goto free_source;
 

@@ -14,8 +14,8 @@ typedef struct _bvr_io_image_source_t bvr_io_image_source_t;
  * @return int 
  */
 bvr_io_image_source_t *bvr_io_load_png(const char *path_name);
-bvr_mat8_t *bvr_io_grayscale_src(const bvr_io_image_source_t *src);
-bvr_mat8_t *bvr_io_rgb_src(const bvr_io_image_source_t *src);
+bvr_mat8_t *bvr_io_image_src(const bvr_io_image_source_t *src);
+int bvr_io_image_source_pixel_stride(const bvr_io_image_source_t *src);
 /**
  * @brief Release memory of an image source
  * 

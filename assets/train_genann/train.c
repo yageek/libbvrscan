@@ -60,7 +60,7 @@ int main(int argc, char **argv)
             exit(-1);
         }
 
-        bvr_mat8_t *rgb = bvr_io_rgb_src(src);
+        bvr_mat8_t *rgb = bvr_io_image_src(src);
         if (rgb == NULL)
         {
             perror("can not load rgb image");
@@ -91,13 +91,14 @@ int main(int argc, char **argv)
             int j;
             for (j = 0; j < INPUTS; j++)
             {
-                double val = ((double)in_ptr[j])*0.99/255.0+0.01;
+                double val = ((double)in_ptr[j]) * 0.99 / 255.0 + 0.01;
                 current_input[j] = val;
             }
 
             // Load the outputs
             int o;
-            for(o = 0; o < OUTPUTS; o++) {
+            for (o = 0; o < OUTPUTS; o++)
+            {
                 current_output[o] = 0.1;
             }
             current_output[i] = 1.0;
