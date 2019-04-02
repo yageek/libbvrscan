@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string.h>
 
 #include <cairo/cairo.h>
 #include <unistd.h>
@@ -66,7 +67,7 @@ int main(int argc, const char *argv[])
     }
 
     int i = 0;
-    for (i = 0; i < sizeof(assets_list); i++)
+    for (i = 0; i < strlen(assets_list); i++)
     {
         char current = assets_list[i];
 
@@ -74,26 +75,25 @@ int main(int argc, const char *argv[])
         cairo_surface_t *surface;
         cairo_t *cr;
 
-        surface = cairo_image_surface_create(CAIRO_FORMAT_A8, ASSET_WIDTH, ASSET_HEIGHT);
+        surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, ASSET_WIDTH, ASSET_HEIGHT);
         cr = cairo_create(surface);
 
-        // Fill background white
-        cairo_set_source_rgb(cr, 255.0, 255.0, 255.0);
-        cairo_rectangle(cr, 0.25, 0.25, 0.5, 0.5);
-        cairo_fill(cr);
+        // Background
+        cairo_set_source_rgba(cr, 1.0, 1.0, 1.0, 1.0);
+        cairo_paint(cr);
 
-        // Fill text
-        cairo_select_font_face(cr, "OCRB", CAIRO_FONT_SLANT_NORMAL,
-                               CAIRO_FONT_WEIGHT_NORMAL);
-        cairo_set_font_size(cr, 15.0);
+        // Draw the character
+        cairo_select_font_face(cr, "OCRB",
+                               CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+        cairo_set_font_size(cr, 30.0);
 
-        cairo_text_extents_t te;
-        cairo_text_extents(cr, &current, &te);
+        cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
+        cairo_move_to(cr, 5.0, 27.0);
         cairo_show_text(cr, &current);
 
         // Save file to png
         snprintf(output_buff, 1024, "%s/generated/%c.png", output_path, current);
-        cairo_status_t status = cairo_surface_write_to_png(surface, output_buff);
+        cairo_status_t status = cairo_surface_write_to_png(cairo_get_target(cr), output_buff);
         if (status != CAIRO_STATUS_SUCCESS)
         {
             perror(cairo_status_to_string(status));
